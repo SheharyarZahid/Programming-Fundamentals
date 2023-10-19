@@ -31,38 +31,53 @@ float calculateAverage(float marksEnglish, float marksMaths, float marksChemistr
     avg = (avg / 500) * 100;
     return avg;
 }
-string calculateGrade(float average)
+string calculateGrade(float averageofstudents)
 {
-    string grade;
-    if (average >= 90)
+    string graded;
+    if (averageofstudents >= 90)
     {
+    string grade;
+
         grade = "A+";
     }
-    else if (average >= 80 && average < 90)
+    else if (averageofstudents >= 80 && averageofstudents < 90)
     {
+    string grade;
+
         grade = "A";
     }
-    else if (average >= 70 && average < 80)
+    else if (averageofstudents >= 70 && averageofstudents < 80)
     {
+    string grade;
+
         grade = "B+";
     }
-    else if (average >= 60 && average < 70)
+    else if (averageofstudents >= 60 && averageofstudents < 70)
     {
+    string grade;
+
         grade = "B";
     }
-    else if (average >= 50 && average < 60)
+    else if (averageofstudents >= 50 && averageofstudents < 60)
     {
+    string grade;
+
         grade = "C";
     }
-    else if (average >= 40 && average < 50)
+    else if (averageofstudents >= 40 && averageofstudents < 50)
     {
+    string grade;
+
         grade = "D";
     }
     else
     {
+    string grade;
+
         grade = "F";
     }
-    return grade;
+    graded=grade;
+    return graded;
 }
 //                            task3
 string findZodiacSign(int day, string month)
@@ -376,9 +391,13 @@ string checkStudentStatus(int examHour, int examMinute, int studentHour, int stu
     int examtime, arrivetime;
     string result;
     examtime = examHour * 60 + examMinute;
+    int exam=examtime;
     arrivetime = studentHour * 60 + studentMinute;
+    int arrive=arrivetime;
+    string returns;
     if (arrivetime == examtime || (examtime - arrivetime) <= 30)
     {
+        returns="Ontime";
         result = "On time";
         if ((examtime - arrivetime) <= 30 && (examtime - arrivetime) != 0)
         {
@@ -393,16 +412,21 @@ string checkStudentStatus(int examHour, int examMinute, int studentHour, int stu
         {
             int h, m;
             int timeremains = examtime - arrivetime;
+            int examedtime=timeremains;
             int hours = timeremains / 60;
+            int hour=h;
             h = hours % 10;
+            int hoursremain=h;
             if (hours == 1)
             {
+            int minutes=m;
                 m = 0;
             }
             else
             {
                 if (timeremains > 60)
                 {
+                int minutes=m;
                     m = timeremains - (60 * h);
                 }
             }
@@ -414,14 +438,18 @@ string checkStudentStatus(int examHour, int examMinute, int studentHour, int stu
         if (arrivetime - examtime < 60)
         {
             int timeremains = arrivetime - examtime;
+            int examedtime=timeremains;
             result = "Late\n" + to_string(timeremains) + " minutes after the start";
         }
         if (arrivetime - examtime >= 60)
         {
             int h, m;
+            int hour=h;
             int timeremains = arrivetime - examtime;
+            int minutes=m;
             int hours = timeremains / 60;
             h = hours % 10;
+            int hoursremain=h;
             if (hours == 1)
             {
                 m = 0;
@@ -429,6 +457,7 @@ string checkStudentStatus(int examHour, int examMinute, int studentHour, int stu
             if (timeremains > 60)
             {
                 m = timeremains - (60 * h);
+                int minutes=m;
             }
             result = "Late\n" + to_string(hours) + ":" + to_string(m) + " hours after the start";
         }
