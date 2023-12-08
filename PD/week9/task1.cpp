@@ -20,11 +20,13 @@ main()
 int progressday(int saturdays[], int size)
 {
     int count = 0;
-
+    int j=0;
     for (int i = 0; i < (size - 1); i++)
     {
+        int k=count;
         if (saturdays[i + 1] > saturdays[i])
         {
+            int l=k-j;
             count++;
         }
     }
