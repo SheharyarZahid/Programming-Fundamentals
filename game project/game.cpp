@@ -2,6 +2,7 @@
 #include <iostream>
 #include<conio.h>
 #include <windows.h>
+#include <fstream>
 #include<iomanip>
 using namespace std;
 
@@ -54,6 +55,8 @@ void generateCharacters();
 void generateColors();
 
 // Other game-related functions
+int loadHighestScore();
+void storeHighestScore(int score);
 int isAlphabet(string value);
 void moveBullet();
 void shootBullet(int pX, int pY);
@@ -101,7 +104,7 @@ bool enemyBulletActive[MAX_ENEMY_BULLETS];
 bool bulletActive = false;
     int i=0;
 int count=0;
-
+int highestScore=0;
 
 // Main function
 main()
@@ -116,21 +119,29 @@ int ex = 126, ey = 6;
 int fire=0;
 string ops="";
 int op=isAlphabet(ops);
+storeHighestScore(score);
+highestScore=loadHighestScore();
+if(highestScore>10000){
+    highestScore=0;
+}
 while (true)
 {
 
     system("cls");
     if(op==0){
-        ops="";
+        
+        ops=" ";
 display();
 text();
 ship();
+gotoxy(75,55);
+cout<<" ";
 gotoxy(75,55);
 cin>>ops;
 op=isAlphabet(ops);
     }
     else{
-      op==0;
+      op=0;
       display();
       ship();
 text();
@@ -140,6 +151,7 @@ op=isAlphabet(ops);
         }
     if(op==3){
         system("cls");
+storeHighestScore(score);
         exit(0);
     }
     if(op==2){
@@ -156,8 +168,9 @@ if(op==1){
    
 while (true)
 {
-    
     stone();
+    gotoxy(90,2);
+    cout<<"Highest Score: "<<highestScore;
      gotoxy(120,2);
     setcolor(1);
     cout<<"Health: "<<health;
@@ -210,6 +223,7 @@ int ex = 126, ey = 6;
  eX = 120, eY = 20;
  ex = 126, ey = 6;
         health1=5;
+        op=0;
         health=500;
         health2=5;
          enemy2a=true;
@@ -280,6 +294,8 @@ active=true;
         health1=5;
         health2=5;
         health3=5;
+        op=0;
+        ops="";
         gameover();
         break;
     }
@@ -294,6 +310,42 @@ active=true;
 }
 }
 }
+//                                         store highest score
+int loadHighestScore() {
+    fstream file;
+    int highestScore;
+
+    file.open("highestScore.txt", ios::in);
+    if (file.is_open()) {
+        file >> highestScore;
+        file.close();
+    } else {
+        file.open("highestScore.txt", ios::out);
+        file << 0;
+        file.close();
+        highestScore = 0;
+    }
+    return highestScore;
+}
+   
+//                                                                    highest score
+void storeHighestScore(int score) {
+    fstream file;
+    file.open("highestScore.txt", ios::out);
+    
+    if (!file.is_open()) {
+        file << 0;
+        return;
+    }
+
+    if (score > highestScore) {
+        file << score;
+    }
+
+    file.close();
+
+}
+
 //                                                                    shoot bullet
 void shootBullet(int pX, int pY) {
     if (!bulletActive) {
@@ -377,7 +429,9 @@ void drawEnemyBullet3()
     if (enemi3)
     {
         gotoxy(enemyX3-3, enemyY3+2);
+        setcolor(red);
         cout << "(_)";
+        setcolor(15);
     }
 }
 
@@ -429,7 +483,9 @@ void drawEnemyBullet()
     if (enemi2)
     {
         gotoxy(enemyX, enemyY);
+        setcolor(red);
         cout << "<=";
+        setcolor(15);
     }
 }
 
@@ -557,7 +613,9 @@ void moveEnemyBullets(int &ex, int &ey, int &pX, int &pY) {
 
                 // Draw the bullet at the new position
                 gotoxy(enemyBulletX[i], enemyBulletY[i]);
+                setcolor(red);
                 cout << "\\_/";
+                setcolor(15);
             }
         }
     }
@@ -603,7 +661,7 @@ void controls(){
 //                                                                   Move surfer up
 void movesurferup(int &pX,int &pY,string &rifle)
 {
-    if (getCharAtxy(pX, pY - 2) == ' ' && pY >= 15)
+    if (getCharAtxy(pX, pY - 2) == ' ' && pY >= 15 && getCharAtxy(pX + 1, pY - 2) == ' ' && getCharAtxy(pX + 2, pY - 2) == ' ' && getCharAtxy(pX + 3, pY - 2) == ' ' && getCharAtxy(pX + 4, pY - 2) == ' ' && getCharAtxy(pX + 5, pY - 2) == ' ' && getCharAtxy(pX + 6, pY - 2) == ' ' && getCharAtxy(pX + 7, pY - 2) == ' ' && getCharAtxy(pX + 8, pY - 2) == ' ' && getCharAtxy(pX + 9, pY - 2) == ' ' && getCharAtxy(pX + 10, pY - 2) == ' ' && getCharAtxy(pX + 11, pY - 2) == ' ' && getCharAtxy(pX + 12, pY - 2) == ' ' && getCharAtxy(pX + 13, pY - 2) == ' ' && getCharAtxy(pX + 14, pY - 2) == ' ' && getCharAtxy(pX + 15, pY - 2) == ' ' && getCharAtxy(pX + 16, pY - 2) == ' ' && getCharAtxy(pX + 17, pY - 2) == ' ' && getCharAtxy(pX + 18, pY - 2) == ' ' && getCharAtxy(pX + 19, pY - 2) == ' ' && getCharAtxy(pX + 20, pY - 2) == ' ' && getCharAtxy(pX + 21, pY - 2) == ' ' && getCharAtxy(pX + 22, pY - 2) == ' ' && getCharAtxy(pX + 23, pY - 2) == ' ' && getCharAtxy(pX + 24, pY - 2) == ' ' && getCharAtxy(pX + 25, pY - 2) == ' '&& getCharAtxy(pX + 26, pY - 2) == ' '&& getCharAtxy(pX + 27, pY - 2) == ' '&& getCharAtxy(pX + 28, pY - 2) == ' '&& getCharAtxy(pX + 29, pY - 2) == ' ')
     {
 
         erasesurfer(pX,pY);
@@ -646,7 +704,7 @@ void movesurferRight(int &pX, int &pY, string &rifle, int &score)
 // Move surfer down
 void movesurferdown(int &pX, int &pY, string &rifle)
 {
-    if (getCharAtxy(pX, pY + 8) == ' ')
+    if (getCharAtxy(pX, pY + 8) == ' '&& getCharAtxy(pX+1,pY+8)==' '&& getCharAtxy(pX+2,pY+8)==' '&& getCharAtxy(pX+3,pY+8)==' '&& getCharAtxy(pX+4,pY+8)==' '&& getCharAtxy(pX+5,pY+8)==' '&& getCharAtxy(pX+6,pY+8)==' '&& getCharAtxy(pX+7,pY+8)==' '&& getCharAtxy(pX+8,pY+8)==' '&& getCharAtxy(pX+9,pY+8)==' '&& getCharAtxy(pX+10,pY+8)==' '&& getCharAtxy(pX+11,pY+8)==' '&& getCharAtxy(pX+12,pY+8)==' '&& getCharAtxy(pX+13,pY+8)==' '&& getCharAtxy(pX+14,pY+8)==' '&& getCharAtxy(pX+15,pY+8)==' '&& getCharAtxy(pX+16,pY+8)==' '&& getCharAtxy(pX+17,pY+8)==' '&& getCharAtxy(pX+18,pY+8)==' '&& getCharAtxy(pX+19,pY+8)==' '&& getCharAtxy(pX+20,pY+8)==' '&& getCharAtxy(pX+21,pY+8)==' '&& getCharAtxy(pX+22,pY+8)==' '&& getCharAtxy(pX+23,pY+8)==' '&& getCharAtxy(pX+24,pY+8)==' '&& getCharAtxy(pX+25,pY+8)==' '&& getCharAtxy(pX+26,pY+8)==' '&& getCharAtxy(pX+27,pY+8)==' '&& getCharAtxy(pX+28,pY+8)==' '&& getCharAtxy(pX+29,pY+8)==' ')
     {
         erasesurfer(pX, pY);
         pY = pY + 2;
@@ -806,7 +864,7 @@ char getCharAtxy(short int x, short int y)
 //  print enemy
 void printEnemy(int &eX, int &eY)
 {
-    setcolor(12);
+    setcolor(lightred);
     gotoxy(eX, eY);
     cout << "            / | [            " << endl;
     gotoxy(eX, eY + 1);
@@ -845,7 +903,7 @@ void moveEnemy(int &eX, int &eY,int &pX,int &pY)
     {
         eY = eY + 1;
         eX = eX - 1;
-       if(eX > pX && eX < pX + 29 && eY+7 >= pY && eY <= pY + 7|| eY==32){
+       if(eX > pX && eX < pX + 29 && eY+6 >= pY && eY <= pY + 6 &&eX+30>=pX|| eY==32 || getCharAtxy(eX,eY+5)!=' '||getCharAtxy(eX+1,eY+5)!=' '||getCharAtxy(eX+2,eY+5)!=' '||getCharAtxy(eX+3,eY+5)!=' '||getCharAtxy(eX+4,eY+5)!=' '||getCharAtxy(eX+5,eY+5)!=' '||getCharAtxy(eX+6,eY+5)!=' '||getCharAtxy(eX+7,eY+5)!=' '||getCharAtxy(eX+8,eY+5)!=' '||getCharAtxy(eX+9,eY+5)!=' '||getCharAtxy(eX+10,eY+5)!=' '||getCharAtxy(eX+11,eY+5)!=' '||getCharAtxy(eX+12,eY+5)!=' '||getCharAtxy(eX+13,eY+5)!=' '||getCharAtxy(eX+14,eY+5)!=' '||getCharAtxy(eX+15,eY+5)!=' '||getCharAtxy(eX+16,eY+5)!=' '||getCharAtxy(eX+17,eY+5)!=' '||getCharAtxy(eX+18,eY+5)!=' '||getCharAtxy(eX+19,eY+5)!=' '||getCharAtxy(eX+20,eY+5)!=' '||getCharAtxy(eX+21,eY+5)!=' '||getCharAtxy(eX+22,eY+5)!=' '||getCharAtxy(eX+23,eY+5)!=' '||getCharAtxy(eX+24,eY+5)!=' '||getCharAtxy(eX+25,eY+5)!=' '||getCharAtxy(eX+26,eY+5)!=' '||getCharAtxy(eX+27,eY+5)!=' '||getCharAtxy(eX+28,eY+5)!=' '||getCharAtxy(eX+29,eY+5)!=' '||getCharAtxy(eX,eY-1)!=' '||getCharAtxy(eX+1,eY-1)!=' '||getCharAtxy(eX+2,eY-1)!=' '||getCharAtxy(eX+3,eY-1)!=' '||getCharAtxy(eX+4,eY-1)!=' '||getCharAtxy(eX+5,eY-1)!=' '){
             patrol = false;
         }
     }
@@ -946,6 +1004,7 @@ void display(){
 //                                                                       print enemy 2
 void printEnemy2(int &ex, int &ey)
 {
+    setcolor(magenta);
     gotoxy(ex, ey);
     cout << "           ___      " << endl;
     gotoxy(ex, ey + 1);
@@ -960,6 +1019,7 @@ void printEnemy2(int &ex, int &ey)
     cout << " '\\____\\--||     " << endl;
     gotoxy(ex, ey + 6);
     cout << "        `\\__\\    " << endl;
+    setcolor(15);
 }
 //                                                                       erase enemy 2
 void eraseEnemy2(int &ex,int &ey)
@@ -1059,6 +1119,7 @@ void ship(){
                                                                     //  print enemy 2
 void printEnemy3(int &EX, int &EY)
 {
+    setcolor(lightgreen);
     gotoxy(EX, EY);
     cout << "     _/--\\_" << endl;
     gotoxy(EX, EY + 1);
@@ -1067,6 +1128,7 @@ void printEnemy3(int &EX, int &EY)
     cout << "()__|---->," << endl;
     gotoxy(EX, EY + 3);
     cout << "     _/--\\_" << endl;
+    setcolor(15);
 }
 //                                                                       erase enemy 2
 void eraseEnemy3(int &EX,int &EY)
