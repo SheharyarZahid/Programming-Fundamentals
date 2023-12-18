@@ -19,6 +19,7 @@ void signup();
 void bankapp();
 void thanku();
 void optionsdisplay();
+void histories();
 void signuplogin();
 string option(int x, int y);
 bool passworddisplay(string passwordcheck, string password, string passwordreturn);
@@ -175,12 +176,6 @@ main()
             accountsindex[i] = 0;
         }
     }
-
-    //                           ██████  ██   ██     ███████ ██      ███████ ███    ███ ███████ ███    ██ ████████ ███████ 
-    //                          ██    ██ ██  ██      ██      ██      ██      ████  ████ ██      ████   ██    ██    ██      
-    //                          ██    ██ █████       █████   ██      █████   ██ ████ ██ █████   ██ ██  ██    ██    ███████ 
-    //                          ██    ██ ██  ██      ██      ██      ██      ██  ██  ██ ██      ██  ██ ██    ██         ██ 
-    //                           ██████  ██   ██     ███████ ███████ ███████ ██      ██ ███████ ██   ████    ██    ███████ 
 
     //                                                     Display screen
     loadDataFromFile(namearray, balances, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_USERS, limit);
@@ -455,8 +450,9 @@ main()
                                     if(comma(variable)){
 
                                     bankdetails(namearray, variable, index);
-                                    variable = information(28, 49);
-                                    if(comma(variable)){
+                                    variable = (information(28, 49));
+                                    isAlphabet(variable);
+                                    if(comma(variable)&& variable.length()==13){
                                     bankdetails(cnicarray, variable, index);
                                     variable = information(90, 43);
                                     if(comma(variable)&& variable=="admin" && variable=="user" && variable=="ADMIN" && variable=="USER" && variable=="Admin" && variable=="User"){
@@ -653,6 +649,8 @@ main()
                                 //             view transaction histories
                                 else if (options == 3)
                                 {
+                                    system("cls");
+                                    histories();
                                     viewAllTransactions(namearray, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_USERS, type, name);
                                     gotoxy(60, 52);
                                     cout << "                        ";
@@ -669,7 +667,12 @@ main()
                                     cout << "Current Transaction limit: " << limit;
                                     gotoxy(60, 38);
                                     cout << "Enter new limit: ";
-                                    cin >> limit;
+                                    string limitString;
+                                    cin >> limitString;
+                                    try {
+                                    limit = stoi(limitString);
+                                    if(limit>0 && comma(limitString)){
+                                    
                                     gotoxy(55, 52);
                                     cout << "                           ";
                                     gotoxy(55, 52);
@@ -678,6 +681,35 @@ main()
                                     Sleep(1000);
                                     options = 3;
                                     break;
+                                    }
+                                    else{
+                                        gotoxy(55, 52);
+                                    cout << "                           ";
+                                    gotoxy(55, 52);
+                                    cout << "Invalid limit.";
+                                    Sleep(1000);
+                                    options = 3;
+                                    break;
+                                    }
+                                }
+                                catch (const std::invalid_argument& e) {
+                                                 gotoxy(70, 52);
+                                                cout << "Invalid limit";
+                                                Sleep(1000);
+                                                gotoxy(70, 52);
+                                                cout << "                     ";
+                                                options=2;
+                                                Sleep(1000);
+                                                break;
+
+                                                } catch (const std::out_of_range& e) {
+                                                      gotoxy(70, 52);
+                                                cout << "Invalid limit";
+                                                Sleep(1000);
+                                                gotoxy(70, 52);
+                                                cout << "                     ";
+                                                }
+                      
                                 }
                                 else if (options == 4)
                                 {
@@ -1250,13 +1282,13 @@ void viewAllUsers(string usernames[], double balances[], int MAX_USERS,string na
 
 void viewAllTransactions(string usernames[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_USERS, string type, string name)
 {
-
-    gotoxy(36, 36);
-    cout << setw(30) << "Username" << setw(30) << "Description" << setw(20) << "Amount" << endl;
     for (int i = 0; i < MAX_USERS; i++)
     {
         if (type == "user" && usernames[i] == name)
         {
+
+    gotoxy(36, 36);
+    cout << setw(30) << "Username" << setw(30) << "Description" << setw(20) << "Amount" << endl;
     gotoxy(60, 34);
     cout << "Transaction Reciving History of User" << endl;
             for (int j = 0; j < 10; ++j)
@@ -1268,11 +1300,15 @@ void viewAllTransactions(string usernames[], string transactionHistoriesUsername
         }
         if (type == "admin")
         {
-                gotoxy(60, 34);
+    gotoxy(36, 20);
+    cout<<"                                                                                  ";
+    gotoxy(36, 22);
+    cout << setw(30) << "Username" << setw(30) << "Description" << setw(20) << "Amount" << endl;
+                gotoxy(60, 14);
     cout << "Transaction History for All Users:" << endl;
-            for (int j = 0; j <10; ++j)
+            for (int j = 0; j <transactionCounts[i]; ++j)
             {
-                gotoxy(36, 37 + j);
+                gotoxy(36, 17 + j);
                 cout << setw(30) << transactionHistoriesUsernames[i] << setw(30) << transactionDescriptions[i][j]
                      << setw(20) << fixed << setprecision(2) << transactionAmounts[i][j] << endl;
             }
@@ -3434,6 +3470,114 @@ void displaymoneymanage()
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 34);
     cout << "#----------------------------------------                       ----------------------------------------#" << endl;
+    gotoxy(20, 35);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 36);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 37);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 38);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 39);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 40);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 41);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 42);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 43);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 44);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 45);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 46);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 47);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 48);
+    cout << "#########################################################################################################" << endl;
+    gotoxy(20, 49);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 50);
+    cout << "#                             ________________________________________________                          #" << endl;
+    gotoxy(20, 51);
+    cout << "#                            |                                                 |                        #" << endl;
+    gotoxy(20, 52);
+    cout << "#                            |                                                 |                        #" << endl;
+    gotoxy(20, 53);
+    cout << "#                            |_________________________________________________|                        #" << endl;
+    gotoxy(20, 54);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 55);
+    cout << "#########################################################################################################";
+}
+//                                                      user money page
+void histories()
+{
+    setcolor(lightcyan);
+    gotoxy(20, 5);
+    cout << "#########################################################################################################" << endl;
+    gotoxy(20, 6);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 7);
+    cout << R"(#             _____                         _   _            _  _ _    _           _                    #)" << endl;
+    gotoxy(20, 8);
+    cout << R"(#            |_   _| _ __ _ _ _  _____ _ __| |_(_)___ _ _   | || (_)__| |_ ___ _ _(_)___ ___            #)" << endl;
+    gotoxy(20, 9);
+    cout << R"(#              | || '_/ _` | ' \(_-< _` / _|  _| / _ \ ' \  | __ | (_-<  _/ _ \ '_| / -_|_-<            #)" << endl;
+    gotoxy(20, 10);
+    cout << R"(#              |_||_| \__,_|_||_/__|__,_\__|\__|_\___/_||_| |_||_|_/__/\__\___/_| |_\___/__/            #)" << endl;
+    gotoxy(20, 11);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 12);
+    cout << "#########################################################################################################" << endl;
+    setcolor(white);
+    gotoxy(20, 13);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 14);
+    cout << "#                                                                                                       #" << endl; 
+    gotoxy(20, 15);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 16);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 17);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 18);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 19);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 20);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 21);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 22);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 23);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 24);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 25);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 26);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 27);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 28);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 29);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 30);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 31);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 32);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 33);
+    cout << "#                                                                                                       #" << endl;
+    gotoxy(20, 34);
+    cout << "#                                                                                                       #" << endl;
     gotoxy(20, 35);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 36);
