@@ -32,7 +32,7 @@ void bankadd(string bankholdername[], string banknumber[], string bankname[], st
 void bankdetails(string bankdetail[], string variable, int &x);
 void display(int x, int y);
 void displaypasswordcheck(string passwordreturn);
-void updateInformation(string &info, int x, int y,int index);
+void updateInformation(string &info, int x, int y, int index);
 void displayFreezeScreen();
 void displayUnfreezeScreen();
 void admin(string &name, string &type);
@@ -46,24 +46,25 @@ void displaymoneymanage();
 void displaymoneymanageadmin();
 bool comma(string &field);
 //                                                 array function
-void readArrayFromFile(string bankholders[], string bankholder[], string banknumber[], string bankname[], int index[], int size, string name);
-void printArrayToFile(string name, string bankholder[], string banknumber[], string bankname[], int index[], int size);
-void readData(string names[], string passwords[], string cnic[], string role[], int &index);
-void deleteuser(string name[], string cnic[], string role[], string passwordarray[], int index);
+void viewAllUsers(string usernames[], double balances[], int MAX_USERS, string name, bool deposit);
 void viewRecords(string userNames[], string useraccount[], string role[]);
 void deleteEntity(string bankholdername[], string banknumber[], string bankname[], int indexs[], int index);
 void printArray(string bankholdername[], string banknumber[], string bankname[], int index[]);
 int searchArray(string arr[], string object, int &indexCount);
 bool log(string name, string password, string &cnic, string cnicarray[], string namearray[], string &role, string rolearray[], string passwordarray[], int &indexCount, int &data_index, int fileindex);
+void viewAllTransactions(string usernames[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_USERS, string type, string name);
 void sign_string(string name, string password, string cnic, string role, string namearray[], string passwordarray[], string rolearray[], string cnicarray[], int &indexCount);
 void ATMoptions(string name, string type, string named, string card, string ccv, string passwordcheck, string password, int options, string passwordreturn, string &status);
 void edit_string(string &name, string &cnic, string &password, string &role, string namearray[], string passwordarray[], string rolearray[], string cnicarray[], int &indexCount);
-
+void addTransaction(int userIndex, const string &description, double amount, string usernames[], double balances[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_DESCRIPTION_LENGTH, int MAX_USERS, int limit);
+//                                                 file functions
+void deleteuser(const string& fileName, string name[], string cnic[], string role[], string passwordarray[], int index);
+void readData(string names[], string passwords[], string cnic[], string role[], int &index);
+void printArrayToFile(string name, string bankholder[], string banknumber[], string bankname[], int index[], int size);
+void readArrayFromFile(string bankholders[], string bankholder[], string banknumber[], string bankname[], int index[], int size, string name);
 void saveDataToFile(string usernames[], double balances[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_USERS, int &limit);
 void loadDataFromFile(string usernames[], double balances[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_USERS, int &limit);
-void viewAllUsers(string usernames[], double balances[], int MAX_USERS,string name,bool deposit);
-void viewAllTransactions(string usernames[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_USERS, string type, string name);
-void addTransaction(int userIndex, const string &description, double amount, string usernames[], double balances[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_DESCRIPTION_LENGTH, int MAX_USERS, int limit);
+
 int findUserIndexByUsername(const string &username, string usernames[], int MAX_USERS);
 // Color constants
 string setcolor(unsigned short color)
@@ -226,11 +227,11 @@ main()
             {
                 system("cls");
                 signup();
-                
+
                 setcolor(lightcyan);
                 name = information(28, 29);
                 setcolor(15);
-                if (hasNoInteger(name)&& comma(name))
+                if (hasNoInteger(name) && comma(name))
                 {
                     if (name.length() > 10)
                     {
@@ -246,7 +247,7 @@ main()
                         setcolor(lightcyan);
                         type = information(90, 29);
                         setcolor(15);
-                        if (type != "admin" && type != "user" && type != "ADMIN" && type != "USER" && type != "Admin" && type != "User"&& !comma(type))
+                        if (type != "admin" && type != "user" && type != "ADMIN" && type != "USER" && type != "Admin" && type != "User" && !comma(type))
                         {
                             gotoxy(60, 52);
                             setcolor(4);
@@ -260,7 +261,7 @@ main()
                             cnic = information(28, 35);
                             setcolor(15);
 
-                            if (cnic.length() != 13&& comma(cnic))
+                            if (cnic.length() != 13 && comma(cnic))
                             {
 
                                 gotoxy(60, 52);
@@ -283,7 +284,7 @@ main()
                                     setcolor(15);
                                     Sleep(500);
                                 }
-                                if (password.length() >= 8 && password.length() <= 16&& comma(password))
+                                if (password.length() >= 8 && password.length() <= 16 && comma(password))
                                 {
                                     if (searchArray(namearray, name, fileindex) == -1 && searchArray(cnicarray, cnic, fileindex) == -1)
                                     {
@@ -401,15 +402,15 @@ main()
                                 options = isAlphabet(options2);
                                 if (options == 1)
                                 {
-                                    updateInformation(name, 28, 30,0);
+                                    updateInformation(name, 28, 30, 0);
                                 }
                                 else if (options == 2)
                                 {
-                                    updateInformation(cnic, 28, 36,1);
+                                    updateInformation(cnic, 28, 36, 1);
                                 }
                                 else if (options == 3)
                                 {
-                                    updateInformation(password, 28, 42,2);
+                                    updateInformation(password, 28, 42, 2);
                                 }
                                 else if (options == 0)
                                 {
@@ -447,37 +448,41 @@ main()
                                     int index = isAlphabet(indexst);
                                     index -= 1;
                                     variable = information(28, 43);
-                                    if(comma(variable)){
+                                    if (comma(variable))
+                                    {
 
-                                    bankdetails(namearray, variable, index);
-                                    variable = (information(28, 49));
-                                    isAlphabet(variable);
-                                    if(comma(variable)&& variable.length()==13){
-                                    bankdetails(cnicarray, variable, index);
-                                    variable = information(90, 43);
-                                    if(comma(variable)&& variable=="admin" && variable=="user" && variable=="ADMIN" && variable=="USER" && variable=="Admin" && variable=="User"){
-                                    bankdetails(rolearray, variable, index);
-                                    viewRecords(namearray, cnicarray, rolearray);
+                                        bankdetails(namearray, variable, index);
+                                        variable = (information(28, 49));
+                                        isAlphabet(variable);
+                                        if (comma(variable) && variable.length() == 13)
+                                        {
+                                            bankdetails(cnicarray, variable, index);
+                                            variable = information(90, 43);
+                                            if (comma(variable) && variable == "admin" && variable == "user" && variable == "ADMIN" && variable == "USER" && variable == "Admin" && variable == "User")
+                                            {
+                                                bankdetails(rolearray, variable, index);
+                                                viewRecords(namearray, cnicarray, rolearray);
+                                            }
+                                            else
+                                            {
+                                                gotoxy(60, 52);
+                                                cout << "Invalid input";
+                                                Sleep(1000);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            gotoxy(60, 52);
+                                            cout << "Invalid input";
+                                            Sleep(1000);
+                                        }
                                     }
-                                    else{
+                                    else
+                                    {
                                         gotoxy(60, 52);
-                                        cout<<"Invalid input";
+                                        cout << "Invalid input";
                                         Sleep(1000);
                                     }
-
-
-                                    }
-                                    else{
-                                        gotoxy(60, 52);
-                                        cout<<"Invalid input";
-                                        Sleep(1000);
-                                    }
-                                }
-                                else{
-                                    gotoxy(60, 52);
-                                        cout<<"Invalid input";
-                                        Sleep(1000);
-                                }
                                 }
                                 //                                  back to admin page
                                 if (key == 0)
@@ -494,7 +499,7 @@ main()
                                     string key3 = option(72, 56);
                                     int index = isAlphabet(key3);
                                     index -= 1;
-                                    deleteuser(namearray, cnicarray, rolearray, passwordarray, index);
+                               deleteuser("a.txt", namearray, passwordarray, cnicarray, rolearray, index);
                                     system("cls");
                                     manageusers();
                                     viewRecords(namearray, cnicarray, rolearray);
@@ -525,7 +530,7 @@ main()
                         //                                        money management
                         else if (options == 3)
                         {
-                             for (int i = 0; i < 10; i++)
+                            for (int i = 0; i < 10; i++)
                             {
                                 if (namearray[i] == name)
                                 {
@@ -539,126 +544,135 @@ main()
                             options = isAlphabet(optionss);
                             while (true)
                             {
-                            gotoxy(30,27);
-                            setcolor(lightcyan);
-                            cout<<"Balance: "<<balance;
-                            setcolor(15);
+                                gotoxy(30, 27);
+                                setcolor(lightcyan);
+                                cout << "Balance: " << balance;
+                                setcolor(15);
                                 if (options == 1)
+                                {
+                                    viewAllUsers(namearray, balances, MAX_USERS, name, false);
+                                    gotoxy(60, 49);
+                                    cout << "                                    ";
+                                    gotoxy(60, 49);
+                                    cout << "Enter the username: ";
+                                    gotoxy(72, 52);
+                                    cin >> username;
+                                    gotoxy(72, 52);
+                                    cout << "                    ";
+                                    int userIndex = findUserIndexByUsername(username, namearray, MAX_USERS);
+                                    string description;
+                                    if (userIndex != -1 && username != name)
+                                    {
+                                        gotoxy(60, 49);
+                                        cout << "                                    ";
+                                        gotoxy(60, 49);
+                                        cout << "Enter the transaction description:  ";
+                                        cin.ignore();
+                                        gotoxy(72, 52);
+                                        getline(cin, description);
+                                        if (comma(description))
                                         {
-                                            viewAllUsers(namearray, balances, MAX_USERS,name,false);
+
+                                            gotoxy(72, 52);
+                                            cout << "                    ";
+                                            double amount;
+                                            string amounts;
                                             gotoxy(60, 49);
                                             cout << "                                    ";
                                             gotoxy(60, 49);
-                                            cout << "Enter the username: ";
+                                            cout << "Enter the transaction amount: ";
                                             gotoxy(72, 52);
-                                            cin >> username;
-                                            gotoxy(72, 52);
-                                            cout << "                    ";
-                                            int userIndex = findUserIndexByUsername(username, namearray, MAX_USERS);
-                                            string description;
-                                            if (userIndex != -1 && username != name)
+                                            cin >> amounts;
+                                            if (comma(amounts))
                                             {
-                                                gotoxy(60, 49);
-                                                cout << "                                    ";
-                                                gotoxy(60, 49);
-                                                cout << "Enter the transaction description:  ";
-                                                cin.ignore();
-                                                gotoxy(72, 52);
-                                                getline(cin, description);
-                                                if(comma(description)){
-
-                                                gotoxy(72, 52);
-                                                cout << "                    ";
-                                                double amount;
-                                                string amounts;
-                                                gotoxy(60, 49);
-                                                cout << "                                    ";
-                                                gotoxy(60, 49);
-                                                cout << "Enter the transaction amount: ";
-                                                gotoxy(72, 52);
-                                                cin >> amounts;
-                                                if(comma(amounts)){
-                                                try {
-                                                    amount =stod(amounts);
-                                                     if(amount>0 && amount<=balance && balance-amount>=0){
-                                                    balance-=amount;
-                                                     for (int i = 0; i < 10; i++)
-                            {
-                                if (namearray[i] == name)
-                                {
-                                balances[i]=balance;
-                                }
-                            }
-                                                gotoxy(72, 52);
-                                                cout << "                    ";
-                                                addTransaction(userIndex, description, amount, namearray, balances, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_DESCRIPTION_LENGTH, MAX_USERS, limit);
-                                                options = 3;
-                                                Sleep(1000);
-                                                break;
+                                                try
+                                                {
+                                                    amount = stod(amounts);
+                                                    if (amount > 0 && amount <= balance && balance - amount >= 0)
+                                                    {
+                                                        balance -= amount;
+                                                        for (int i = 0; i < 10; i++)
+                                                        {
+                                                            if (namearray[i] == name)
+                                                            {
+                                                                balances[i] = balance;
+                                                            }
+                                                        }
+                                                        gotoxy(72, 52);
+                                                        cout << "                    ";
+                                                        addTransaction(userIndex, description, amount, namearray, balances, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_DESCRIPTION_LENGTH, MAX_USERS, limit);
+                                                        options = 3;
+                                                        Sleep(1000);
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                                        gotoxy(70, 52);
+                                                        setcolor(lightred);
+                                                        cout << "Invalid amount";
+                                                        setcolor(15);
+                                                        Sleep(1000);
+                                                        gotoxy(70, 52);
+                                                        cout << "                     ";
+                                                        options = 3;
+                                                        break;
+                                                    }
                                                 }
-                                                else{
+                                                catch (const std::invalid_argument &e)
+                                                {
                                                     gotoxy(70, 52);
                                                     setcolor(lightred);
-                                                cout << "Invalid amount";
-       setcolor(15);
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                options=3;
-                                                break;
+                                                    cout << "Invalid amount";
+                                                    setcolor(15);
+                                                    Sleep(1000);
+                                                    gotoxy(70, 52);
+                                                    cout << "                     ";
                                                 }
-                                                }
-                                                 catch (const std::invalid_argument& e) {
-                                                 gotoxy(70, 52);
-                                                 setcolor(lightred);
-                                                cout << "Invalid amount";
-    setcolor(15);
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                } 
-                                                catch (const std::out_of_range& e) {
-                                                      gotoxy(70, 52);
-                                                      setcolor(lightred);
-                                                cout << "Invalid amount";
-         setcolor(15);
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                }
-                                               
-                                                }
-                                                else{
-                                                 gotoxy(70, 52);
-                                                 setcolor(lightred);
-                                                cout << "Invalid amount";
-    setcolor(15);
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                }
-                                                }
-                                                else{
-                                                 gotoxy(70, 52);
-                                                 setcolor(lightred);
-                                                setcolor(15);cout << "Invalid description";
-
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
+                                                catch (const std::out_of_range &e)
+                                                {
+                                                    gotoxy(70, 52);
+                                                    setcolor(lightred);
+                                                    cout << "Invalid amount";
+                                                    setcolor(15);
+                                                    Sleep(1000);
+                                                    gotoxy(70, 52);
+                                                    cout << "                     ";
                                                 }
                                             }
                                             else
                                             {
                                                 gotoxy(70, 52);
                                                 setcolor(lightred);
-                                                cout << "User not found.";
-  setcolor(15);
+                                                cout << "Invalid amount";
+                                                setcolor(15);
                                                 Sleep(1000);
                                                 gotoxy(70, 52);
-                                                cout << "                ";
+                                                cout << "                     ";
                                             }
                                         }
+                                        else
+                                        {
+                                            gotoxy(70, 52);
+                                            setcolor(lightred);
+                                            setcolor(15);
+                                            cout << "Invalid description";
+
+                                            Sleep(1000);
+                                            gotoxy(70, 52);
+                                            cout << "                     ";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        gotoxy(70, 52);
+                                        setcolor(lightred);
+                                        cout << "User not found.";
+                                        setcolor(15);
+                                        Sleep(1000);
+                                        gotoxy(70, 52);
+                                        cout << "                ";
+                                    }
+                                }
 
                                 //             view transaction histories
                                 else if (options == 3)
@@ -685,51 +699,55 @@ main()
                                     setcolor(15);
                                     string limitString;
                                     cin >> limitString;
-                                    try {
-                                    limit = stoi(limitString);
-                                    if(limit>0 && comma(limitString)){
-                                    
-                                    gotoxy(55, 52);
-                                    cout << "                           ";
-                                    gotoxy(55, 52);
-                                    setcolor(lightcyan);
-                                    cout << "Limit changed successfully.";
-                                    setcolor(15);
-                                    saveDataToFile(namearray, balances, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_USERS, limit);
-                                    Sleep(1000);
-                                    options = 3;
-                                    break;
-                                    }
-                                    else{
-                                        gotoxy(55, 52);
-                                    cout << "                           ";
-                                    gotoxy(55, 52);
-                                    setcolor(lightred);
-                                    cout << "Invalid limit.";
-                                    setcolor(15);
-                                    Sleep(1000);
-                                    options = 3;
-                                    break;
-                                    }
-                                }
-                                catch (const std::invalid_argument& e) {
-                                                 gotoxy(70, 52);
-                                                cout << "Invalid limit";
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                options=2;
-                                                Sleep(1000);
-                                                break;
+                                    try
+                                    {
+                                        limit = stoi(limitString);
+                                        if (limit > 0 && comma(limitString))
+                                        {
 
-                                                } catch (const std::out_of_range& e) {
-                                                      gotoxy(70, 52);
-                                                cout << "Invalid limit";
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                }
-                      
+                                            gotoxy(55, 52);
+                                            cout << "                           ";
+                                            gotoxy(55, 52);
+                                            setcolor(lightcyan);
+                                            cout << "Limit changed successfully.";
+                                            setcolor(15);
+                                            saveDataToFile(namearray, balances, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_USERS, limit);
+                                            Sleep(1000);
+                                            options = 3;
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            gotoxy(55, 52);
+                                            cout << "                           ";
+                                            gotoxy(55, 52);
+                                            setcolor(lightred);
+                                            cout << "Invalid limit.";
+                                            setcolor(15);
+                                            Sleep(1000);
+                                            options = 3;
+                                            break;
+                                        }
+                                    }
+                                    catch (const std::invalid_argument &e)
+                                    {
+                                        gotoxy(70, 52);
+                                        cout << "Invalid limit";
+                                        Sleep(1000);
+                                        gotoxy(70, 52);
+                                        cout << "                     ";
+                                        options = 2;
+                                        Sleep(1000);
+                                        break;
+                                    }
+                                    catch (const std::out_of_range &e)
+                                    {
+                                        gotoxy(70, 52);
+                                        cout << "Invalid limit";
+                                        Sleep(1000);
+                                        gotoxy(70, 52);
+                                        cout << "                     ";
+                                    }
                                 }
                                 else if (options == 4)
                                 {
@@ -772,16 +790,15 @@ main()
                                 options = isAlphabet(options2);
                                 if (options == 1)
                                 {
-                                    updateInformation(name, 28, 30,0);
-                                   
+                                    updateInformation(name, 28, 30, 0);
                                 }
                                 else if (options == 2)
                                 {
-                                    updateInformation(cnic, 28, 36,1);
+                                    updateInformation(cnic, 28, 36, 1);
                                 }
                                 else if (options == 3)
                                 {
-                                    updateInformation(password, 28, 42,2);
+                                    updateInformation(password, 28, 42, 2);
                                 }
                                 else if (options == 0)
                                 {
@@ -902,7 +919,7 @@ main()
                                     {
                                         if (options == 1)
                                         {
-                                            viewAllUsers(namearray, balances, MAX_USERS,name,false);
+                                            viewAllUsers(namearray, balances, MAX_USERS, name, false);
                                             gotoxy(60, 49);
                                             cout << "                                    ";
                                             gotoxy(60, 49);
@@ -922,75 +939,85 @@ main()
                                                 cin.ignore();
                                                 gotoxy(72, 52);
                                                 getline(cin, description);
-                                                if(comma(description)){
+                                                if (comma(description))
+                                                {
 
-                                                gotoxy(72, 52);
-                                                cout << "                    ";
-                                                double amount;
-                                                string amounts;
-                                                gotoxy(60, 49);
-                                                cout << "                                    ";
-                                                gotoxy(60, 49);
-                                                cout << "Enter the transaction amount: ";
-                                                gotoxy(72, 52);
-                                                cin >> amounts;
-                                                if(comma(amounts)){
-                                                try {
-                                                    amount =stod(amounts);
-                                                    balance-=amount;
-                                                     if(amount>0 && amount<=balance && balance-amount>=0){
-                                                for (int i = 0; i < 10; i++)
-                                                   {
-                                                       if (namearray[i] == name)
-                                                       {
-                                                       balances[i]=balance;
-                                                       }
-                                                   }
-                                                gotoxy(72, 52);
-                                                cout << "                    ";
-                                                addTransaction(userIndex, description, amount, namearray, balances, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_DESCRIPTION_LENGTH, MAX_USERS, limit);
-                                                options = 3;
-                                                Sleep(1000);
-                                                break;
+                                                    gotoxy(72, 52);
+                                                    cout << "                    ";
+                                                    double amount;
+                                                    string amounts;
+                                                    gotoxy(60, 49);
+                                                    cout << "                                    ";
+                                                    gotoxy(60, 49);
+                                                    cout << "Enter the transaction amount: ";
+                                                    gotoxy(72, 52);
+                                                    cin >> amounts;
+                                                    if (comma(amounts))
+                                                    {
+                                                        try
+                                                        {
+                                                            amount = stod(amounts);
+                                                            balance -= amount;
+                                                            if (amount > 0 && amount <= balance && balance - amount >= 0)
+                                                            {
+                                                                for (int i = 0; i < 10; i++)
+                                                                {
+                                                                    if (namearray[i] == name)
+                                                                    {
+                                                                        balances[i] = balance;
+                                                                    }
+                                                                }
+                                                                gotoxy(72, 52);
+                                                                cout << "                    ";
+                                                                addTransaction(userIndex, description, amount, namearray, balances, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_DESCRIPTION_LENGTH, MAX_USERS, limit);
+                                                                options = 3;
+                                                                Sleep(1000);
+                                                                break;
+                                                            }
+                                                            else
+                                                            {
+                                                                gotoxy(70, 52);
+                                                                cout << "Invalid amount";
+                                                                Sleep(1000);
+                                                                gotoxy(70, 52);
+                                                                cout << "                     ";
+                                                                options = 3;
+                                                                break;
+                                                            }
+                                                        }
+                                                        catch (const std::invalid_argument &e)
+                                                        {
+                                                            gotoxy(70, 52);
+                                                            cout << "Invalid amount";
+                                                            Sleep(1000);
+                                                            gotoxy(70, 52);
+                                                            cout << "                     ";
+                                                        }
+                                                        catch (const std::out_of_range &e)
+                                                        {
+                                                            gotoxy(70, 52);
+                                                            cout << "Invalid amount";
+                                                            Sleep(1000);
+                                                            gotoxy(70, 52);
+                                                            cout << "                     ";
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        gotoxy(70, 52);
+                                                        cout << "Invalid amount";
+                                                        Sleep(1000);
+                                                        gotoxy(70, 52);
+                                                        cout << "                     ";
+                                                    }
                                                 }
-                                                else{
+                                                else
+                                                {
                                                     gotoxy(70, 52);
-                                                cout << "Invalid amount";
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                options=3;
-                                                break;
-                                                }
-                                                } catch (const std::invalid_argument& e) {
-                                                 gotoxy(70, 52);
-                                                cout << "Invalid amount";
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                } catch (const std::out_of_range& e) {
-                                                      gotoxy(70, 52);
-                                                cout << "Invalid amount";
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                }
-                                               
-                                                }
-                                                else{
-                                                 gotoxy(70, 52);
-                                                cout << "Invalid amount";
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                }
-                                                }
-                                                else{
-                                                 gotoxy(70, 52);
-                                                cout << "Invalid description";
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
+                                                    cout << "Invalid description";
+                                                    Sleep(1000);
+                                                    gotoxy(70, 52);
+                                                    cout << "                     ";
                                                 }
                                             }
                                             else
@@ -1024,16 +1051,16 @@ main()
                                             setcolor(15);
                                             gotoxy(42, 38);
                                             setcolor(lightmagenta);
-                                            cout << setw(26) << "Username" << setw(33) << "Balance" ;
+                                            cout << setw(26) << "Username" << setw(33) << "Balance";
                                             setcolor(15);
                                             gotoxy(42, 40);
-                                              cout << setw(26) <<name << setw(30) << fixed << setprecision(2) << balance << endl;
-                                            gotoxy(42,45);
+                                            cout << setw(26) << name << setw(30) << fixed << setprecision(2) << balance << endl;
+                                            gotoxy(42, 45);
                                             setcolor(lightcyan);
-                                            cout<<"Press 1 to deposit 2 to back";
+                                            cout << "Press 1 to deposit 2 to back";
                                             setcolor(15);
-                                            gotoxy(72,52);
-                                            cout<<"  ";
+                                            gotoxy(72, 52);
+                                            cout << "  ";
                                             string opton = option(72, 52);
                                             options = isAlphabet(opton);
                                             if (options == 1)
@@ -1050,63 +1077,64 @@ main()
                                                 double amounted;
                                                 try
                                                 {
-                                                amounted = stod(amounteds);
-                                                 if(amounted>0){
-                                                gotoxy(72, 52);
-                                                cout << "                    ";
-                                        for (int i = 0; i < 10; i++)
-                                        {
-                                          if (namearray[i] == name)
-                                            {
-                                         balances[i]=balance;
-                                             }
-                                               }
-                                                addTransaction(findUserIndexByUsername(name, namearray, MAX_USERS), "Deposit", amounted, namearray, balances, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_DESCRIPTION_LENGTH, MAX_USERS, limit);
-                                                
-                                                Sleep(1000);
-                                               break;
+                                                    amounted = stod(amounteds);
+                                                    if (amounted > 0)
+                                                    {
+                                                        gotoxy(72, 52);
+                                                        cout << "                    ";
+                                                        for (int i = 0; i < 10; i++)
+                                                        {
+                                                            if (namearray[i] == name)
+                                                            {
+                                                                balances[i] = balance;
+                                                            }
+                                                        }
+                                                        addTransaction(findUserIndexByUsername(name, namearray, MAX_USERS), "Deposit", amounted, namearray, balances, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_DESCRIPTION_LENGTH, MAX_USERS, limit);
+
+                                                        Sleep(1000);
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                                        setcolor(lightred);
+                                                        gotoxy(70, 52);
+                                                        cout << "Invalid amount";
+                                                        setcolor(15);
+                                                        Sleep(1000);
+                                                        gotoxy(70, 52);
+                                                        cout << "                     ";
+                                                        options = 2;
+                                                        break;
+                                                    }
                                                 }
-                                                else{
-                                                    setcolor(lightred);
+                                                catch (const std::invalid_argument &e)
+                                                {
                                                     gotoxy(70, 52);
-                                                cout << "Invalid amount";
-                                                setcolor(15);
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                options=2;
-                                                break;
+                                                    setcolor(lightred);
+                                                    cout << "Invalid amount";
+                                                    setcolor(15);
+
+                                                    Sleep(1000);
+                                                    gotoxy(70, 52);
+                                                    cout << "                     ";
+                                                    options = 2;
+                                                    Sleep(1000);
+                                                    break;
                                                 }
+                                                catch (const std::out_of_range &e)
+                                                {
+                                                    gotoxy(70, 52);
+                                                    setcolor(lightred);
+                                                    cout << "Invalid amount";
+                                                    setcolor(15);
+
+                                                    Sleep(1000);
+                                                    gotoxy(70, 52);
+                                                    cout << "                     ";
+                                                    options = 2;
+                                                    Sleep(1000);
+                                                    break;
                                                 }
-                                                catch (const std::invalid_argument& e) {
-                                                 gotoxy(70, 52);
-                                                 setcolor(lightred);
-                                                cout << "Invalid amount";
-                                                setcolor(15);
-
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                options=2;
-                                                Sleep(1000);
-                                                break;
-
-                                                } catch (const std::out_of_range& e) {
-                                                      gotoxy(70, 52);
-                                                      setcolor(lightred);
-                                                cout << "Invalid amount";
-                                                setcolor(15);
-
-                                                Sleep(1000);
-                                                gotoxy(70, 52);
-                                                cout << "                     ";
-                                                options=2;
-                                                Sleep(1000);
-                                                break;
-
-                                                }
-                                                
-                                               
                                             }
                                             else if (options == 2)
                                             {
@@ -1117,7 +1145,7 @@ main()
                                             else
                                             {
                                                 gotoxy(90, 53);
-                                                 setcolor(lightred);
+                                                setcolor(lightred);
                                                 cout << "Select a valid option";
                                                 setcolor(15);
                                                 Sleep(1000);
@@ -1134,7 +1162,7 @@ main()
                                         else
                                         {
                                             gotoxy(100, 53);
-                                                 setcolor(lightred);
+                                            setcolor(lightred);
                                             cout << "Select a valid option";
                                             setcolor(15);
                                             Sleep(1000);
@@ -1151,7 +1179,7 @@ main()
                                 else
                                 {
                                     gotoxy(90, 53);
-                                                 setcolor(lightred);
+                                    setcolor(lightred);
                                     cout << "Select a valid option";
                                     setcolor(15);
                                     Sleep(1000);
@@ -1167,6 +1195,8 @@ main()
         Sleep(1000);
     }
 }
+
+
 //                                                          commma checker
 bool comma(string &field)
 {
@@ -1205,7 +1235,6 @@ void readArrayFromFile(string bankholders[], string bankholder[], string banknum
 
         inputFile.close();
     }
-
 }
 //                                                    recieving accounts file handling
 void printArrayToFile(string name, string bankholder[], string banknumber[], string bankname[], int index[], int size)
@@ -1257,7 +1286,7 @@ void saveDataToFile(string usernames[], double balances[], string transactionHis
         cout << "Unable to open file for writing." << endl;
     }
 }
-
+//                                                         load data from file
 void loadDataFromFile(string usernames[], double balances[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_USERS, int &limit)
 {
     string limits;
@@ -1303,7 +1332,7 @@ void loadDataFromFile(string usernames[], double balances[], string transactionH
     }
 }
 //                                                list users
-void viewAllUsers(string usernames[], double balances[], int MAX_USERS,string name,bool deposit)
+void viewAllUsers(string usernames[], double balances[], int MAX_USERS, string name, bool deposit)
 {
     gotoxy(65, 34);
     setcolor(lightmagenta);
@@ -1315,7 +1344,7 @@ void viewAllUsers(string usernames[], double balances[], int MAX_USERS,string na
     setcolor(15);
     for (int i = 0; i < MAX_USERS; ++i)
     {
-        if (usernames[i] != ""&& usernames[i]!=name)
+        if (usernames[i] != "" && usernames[i] != name)
         {
             gotoxy(36, 38 + i);
             cout << setw(40) << usernames[i] << setw(30) << fixed << setprecision(2) << balances[i] << endl;
@@ -1323,7 +1352,7 @@ void viewAllUsers(string usernames[], double balances[], int MAX_USERS,string na
     }
     cout << endl;
 }
-
+//                                                      view transaction history
 void viewAllTransactions(string usernames[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_USERS, string type, string name)
 {
     for (int i = 0; i < MAX_USERS; i++)
@@ -1331,12 +1360,12 @@ void viewAllTransactions(string usernames[], string transactionHistoriesUsername
         if (type == "user" && usernames[i] == name)
         {
 
-    gotoxy(36, 36);
-    cout << setw(30) << "Username" << setw(30) << "Description" << setw(20) << "Amount" << endl;
-    gotoxy(60, 34);
-    setcolor(lightmagenta);
-    cout << "Transaction Reciving History of User" << endl;
-    setcolor(15);
+            gotoxy(36, 36);
+            cout << setw(30) << "Username" << setw(30) << "Description" << setw(20) << "Amount" << endl;
+            gotoxy(60, 34);
+            setcolor(lightmagenta);
+            cout << "Transaction Reciving History of User" << endl;
+            setcolor(15);
             for (int j = 0; j < 10; ++j)
             {
                 gotoxy(36, 37 + j);
@@ -1346,17 +1375,17 @@ void viewAllTransactions(string usernames[], string transactionHistoriesUsername
         }
         if (type == "admin")
         {
-    gotoxy(36, 20);
-    cout<<"                                                                                  ";
-    gotoxy(36, 22);
-    cout << setw(30) << "Username" << setw(30) << "Description" << setw(20) << "Amount" << endl;
-                gotoxy(60, 14);
-    setcolor(lightmagenta);
+            gotoxy(36, 20);
+            cout << "                                                                                  ";
+            gotoxy(36, 22);
+            cout << setw(30) << "Username" << setw(30) << "Description" << setw(20) << "Amount" << endl;
+            gotoxy(60, 14);
+            setcolor(lightmagenta);
 
-    cout << "Transaction History for All Users:" << endl;
-    setcolor(15);
+            cout << "Transaction History for All Users:" << endl;
+            setcolor(15);
 
-            for (int j = 0; j <transactionCounts[i]; ++j)
+            for (int j = 0; j < transactionCounts[i]; ++j)
             {
                 gotoxy(36, 17 + j);
                 cout << setw(30) << transactionHistoriesUsernames[i] << setw(30) << transactionDescriptions[i][j]
@@ -1366,7 +1395,7 @@ void viewAllTransactions(string usernames[], string transactionHistoriesUsername
         }
     }
 }
-
+//                                                     add transaction to user
 void addTransaction(int userIndex, const string &description, double amount, string usernames[], double balances[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_DESCRIPTION_LENGTH, int MAX_USERS, int limit)
 {
     // Check if there is space for a new transaction
@@ -1405,77 +1434,73 @@ int findUserIndexByUsername(const string &username, string usernames[], int MAX_
     return -1; // User not found
 }
 
-//                                                     Information edit
-void updateInformation(string &info, int x, int y,int index)
+//                                                       Information edit
+void updateInformation(string &info, int x, int y, int index)
 {
-    string infos="";
+    string infos = "";
     gotoxy(x, y);
     cout << setw(31) << " ";
     infos = information(x, y);
-    if(index==0){
-        if (hasNoInteger(infos)&& comma(infos))
-                {
-                    if (infos.length() > 10)
-                    {
-                        
-                        gotoxy(60, 52);
-                        setcolor(4);
-                        cout << "Username is too long";
-                        setcolor(15);
-                        Sleep(1000);
-                    }
-                    else{
-                        info = infos;
-                    }
-                }
-                else
-                {
-                    gotoxy(59, 52);
-                    setcolor(4);
-                    cout << "Username has integer or comma";
-                    setcolor(15);
-                    Sleep(1000);
-                }
-    }
-    if(index==1){
-        if (infos.length() != 13&& !comma(infos))
-                            {
+    if (index == 0)
+    {
+        if (hasNoInteger(infos) && comma(infos))
+        {
+            if (infos.length() > 10)
+            {
 
-                                gotoxy(60, 52);
-                                setcolor(4);
-                                cout << "Invalid CNIC";
-                                setcolor(15);
-                                Sleep(500);
-                            }
-                            if(infos.length() == 13&& comma(infos))
-                            {
-                                info = infos;
-                            }
+                gotoxy(60, 52);
+                setcolor(4);
+                cout << "Username is too long";
+                setcolor(15);
+                Sleep(1000);
+            }
+            else
+            {
+                info = infos;
+            }
+        }
+        else
+        {
+            gotoxy(59, 52);
+            setcolor(4);
+            cout << "Username has integer or comma";
+            setcolor(15);
+            Sleep(1000);
+        }
     }
-    if(index==2){
+    if (index == 1)
+    {
+        if (infos.length() != 13 && !comma(infos))
+        {
+
+            gotoxy(60, 52);
+            setcolor(4);
+            cout << "Invalid CNIC";
+            setcolor(15);
+            Sleep(500);
+        }
+        if (infos.length() == 13 && comma(infos))
+        {
+            info = infos;
+        }
+    }
+    if (index == 2)
+    {
         if (infos.length() < 8 || infos.length() > 16)
-                            {
-                                gotoxy(60, 52);
-                                setcolor(4);
-                                cout << "Password 8-16 characters long";
-                                setcolor(15);
-                                Sleep(500);
-                            }
-                            if (infos.length() >= 8 && infos.length() <= 16&& comma(infos))
-                            {
-                                
-                                        info = infos;
-                         
-                                
-                            }
+        {
+            gotoxy(60, 52);
+            setcolor(4);
+            cout << "Password 8-16 characters long";
+            setcolor(15);
+            Sleep(500);
+        }
+        if (infos.length() >= 8 && infos.length() <= 16 && comma(infos))
+        {
+
+            info = infos;
+        }
     }
-              
 }
-//                                          #  #  #    ### # # ###  ## ### ###  #  ###  ##
-//                                         # # # #     #   # # # # #    #   #  # # # # #
-//                                         # # ##      ##  # # # # #    #   #  # # # #  #
-//                                         # # # #     #   # # # # #    #   #  # # # #   #
-//                                          #  #  #    #   ### # #  ##  #  ###  #  # # ##
 //                                                   only string validator function
 bool hasNoInteger(string &value)
 {
@@ -1501,10 +1526,20 @@ void edit_string(string &name, string &cnic, string &password, string &role, str
         passwordarray[dataIndex] = password;
         rolearray[dataIndex] = role;
         cnicarray[dataIndex] = cnic;
+
         // Open the file in write mode to clear its contents
-        for (int i = 0; i < 10; i++)
+        ofstream file("a.txt");
+        if (file.is_open())
         {
-            cout << namearray[i] << "," << passwordarray[i] << "," << cnicarray[i] << "," << rolearray[i] << endl;
+            for (int i = 0; i < indexCount; i++)
+            {
+                file << namearray[i] << "," << passwordarray[i] << "," << cnicarray[i] << "," << rolearray[i] << endl;
+            }
+            file.close();
+        }
+        else
+        {
+            cout << "Error opening file for writing." << endl;
         }
     }
 }
@@ -1528,7 +1563,7 @@ void search(int &fileindex)
         }
     }
 }
-//                                                      option input
+//                                                         option input
 string option(int x, int y)
 {
     setcolor(lightgreen);
@@ -1622,14 +1657,39 @@ string getField(string record, int field)
 }
 
 //                                                          delete user
-void deleteuser(string name[], string cnic[], string role[], string passwordarray[], int index)
-{
+void deleteuser(const string& fileName, string name[], string cnic[], string role[], string passwordarray[], int index) {
+    string nameToDelete = name[index];  // Store the name of the user to be deleted
     name[index] = "";
     cnic[index] = "";
     passwordarray[index] = "";
     role[index] = "";
+
+    fstream file(fileName, ios::in | ios::out);
+
+    if (file.is_open()) {
+        fstream tempFile("temp.txt", ios::out);
+
+        while (!file.eof()) {
+            string line;
+            getline(file, line);
+
+            string currentName = getField(line, 1);
+
+            if (currentName != nameToDelete) {  // Compare with nameToDelete instead of name[index]
+                tempFile << line << endl;
+            }
+        }
+
+        file.close();
+        tempFile.close();
+
+        remove(fileName.c_str());
+        rename("temp.txt", fileName.c_str());
+    } else {
+        cout << "Error opening file for reading/writing." << endl;
+    }
 }
-//                                                          print users
+                                                        //   print users
 void viewRecords(string userNames[], string userIDs[], string role[])
 {
     int k = 1;
@@ -1660,7 +1720,7 @@ void deleteEntity(string bankholdername[], string banknumber[], string bankname[
     banknumber[index] = "";
     bankname[index] = "";
 }
-// display bank
+//                                                        display bank
 void printArray(string bankholder[], string banknumber[], string bankname[], int index[])
 {
     int count = 0;
@@ -1687,10 +1747,12 @@ void bankadd(string bankholdername[], string banknumber[], string bankname[], st
     gotoxy(28, 30);
     cout << setw(27) << " ";
     add_bank = information(28, 30);
-    if(comma(add_bank)){
-    bankdetails(bankholdername, add_bank, x);
+    if (comma(add_bank))
+    {
+        bankdetails(bankholdername, add_bank, x);
     }
-    else{
+    else
+    {
         gotoxy(60, 52);
         cout << "Invalid bank holder name";
         Sleep(1000);
@@ -1702,10 +1764,12 @@ void bankadd(string bankholdername[], string banknumber[], string bankname[], st
     gotoxy(28, 36);
     cout << setw(31) << " ";
     add_bank = information(28, 36);
-    if(comma(add_bank)){
-    bankdetails(banknumber, add_bank, x);
+    if (comma(add_bank))
+    {
+        bankdetails(banknumber, add_bank, x);
     }
-    else{
+    else
+    {
         gotoxy(60, 52);
         cout << "Invalid bank number";
         Sleep(1000);
@@ -1716,10 +1780,12 @@ void bankadd(string bankholdername[], string banknumber[], string bankname[], st
     gotoxy(90, 30);
     cout << setw(20) << " ";
     add_bank = information(90, 30);
-    if(comma(add_bank)){
-    bankdetails(bankname, add_bank, x);
+    if (comma(add_bank))
+    {
+        bankdetails(bankname, add_bank, x);
     }
-    else{
+    else
+    {
         gotoxy(60, 52);
         cout << "Invalid bank name";
         Sleep(1000);
@@ -2031,7 +2097,7 @@ void manageusers()
 //                                                        admin screen
 void admin(string &name, string &type)
 {
-    
+
     system("cls");
     setcolor(lightcyan);
     gotoxy(20, 5);
@@ -2956,7 +3022,7 @@ void user(string name, string type)
     gotoxy(20, 22);
     cout << "#                                                   ##                                                  #" << endl;
     gotoxy(20, 23);
-    cout <<"# "<<setcolor(lightcyan)<<" 1) View your Account                             ##    2) CREDIT/DEBIT CARD MANAGEMENT               #" << endl;
+    cout << "# " << setcolor(lightcyan) << " 1) View your Account                             ##    2) CREDIT/DEBIT CARD MANAGEMENT               #" << endl;
     setcolor(white);
     gotoxy(20, 24);
     cout << "#                                                   ##                                                  #" << endl;
@@ -3646,7 +3712,7 @@ void histories()
     gotoxy(20, 13);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 14);
-    cout << "#                                                                                                       #" << endl; 
+    cout << "#                                                                                                       #" << endl;
     gotoxy(20, 15);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 16);
