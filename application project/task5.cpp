@@ -540,7 +540,9 @@ main()
                             while (true)
                             {
                             gotoxy(30,27);
+                            setcolor(lightcyan);
                             cout<<"Balance: "<<balance;
+                            setcolor(15);
                                 if (options == 1)
                                         {
                                             viewAllUsers(namearray, balances, MAX_USERS,name,false);
@@ -596,7 +598,9 @@ main()
                                                 }
                                                 else{
                                                     gotoxy(70, 52);
+                                                    setcolor(lightred);
                                                 cout << "Invalid amount";
+       setcolor(15);
                                                 Sleep(1000);
                                                 gotoxy(70, 52);
                                                 cout << "                     ";
@@ -606,14 +610,18 @@ main()
                                                 }
                                                  catch (const std::invalid_argument& e) {
                                                  gotoxy(70, 52);
+                                                 setcolor(lightred);
                                                 cout << "Invalid amount";
+    setcolor(15);
                                                 Sleep(1000);
                                                 gotoxy(70, 52);
                                                 cout << "                     ";
                                                 } 
                                                 catch (const std::out_of_range& e) {
                                                       gotoxy(70, 52);
+                                                      setcolor(lightred);
                                                 cout << "Invalid amount";
+         setcolor(15);
                                                 Sleep(1000);
                                                 gotoxy(70, 52);
                                                 cout << "                     ";
@@ -622,7 +630,9 @@ main()
                                                 }
                                                 else{
                                                  gotoxy(70, 52);
+                                                 setcolor(lightred);
                                                 cout << "Invalid amount";
+    setcolor(15);
                                                 Sleep(1000);
                                                 gotoxy(70, 52);
                                                 cout << "                     ";
@@ -630,7 +640,9 @@ main()
                                                 }
                                                 else{
                                                  gotoxy(70, 52);
-                                                cout << "Invalid description";
+                                                 setcolor(lightred);
+                                                setcolor(15);cout << "Invalid description";
+
                                                 Sleep(1000);
                                                 gotoxy(70, 52);
                                                 cout << "                     ";
@@ -639,7 +651,9 @@ main()
                                             else
                                             {
                                                 gotoxy(70, 52);
+                                                setcolor(lightred);
                                                 cout << "User not found.";
+  setcolor(15);
                                                 Sleep(1000);
                                                 gotoxy(70, 52);
                                                 cout << "                ";
@@ -662,11 +676,13 @@ main()
                                 else if (options == 2)
                                 {
                                     gotoxy(65, 34);
+                                    setcolor(lightmagenta);
                                     cout << "Transaction Limits" << endl;
                                     gotoxy(60, 36);
                                     cout << "Current Transaction limit: " << limit;
                                     gotoxy(60, 38);
                                     cout << "Enter new limit: ";
+                                    setcolor(15);
                                     string limitString;
                                     cin >> limitString;
                                     try {
@@ -676,7 +692,9 @@ main()
                                     gotoxy(55, 52);
                                     cout << "                           ";
                                     gotoxy(55, 52);
+                                    setcolor(lightcyan);
                                     cout << "Limit changed successfully.";
+                                    setcolor(15);
                                     saveDataToFile(namearray, balances, transactionHistoriesUsernames, transactionDescriptions, transactionAmounts, transactionCounts, MAX_USERS, limit);
                                     Sleep(1000);
                                     options = 3;
@@ -686,7 +704,9 @@ main()
                                         gotoxy(55, 52);
                                     cout << "                           ";
                                     gotoxy(55, 52);
+                                    setcolor(lightred);
                                     cout << "Invalid limit.";
+                                    setcolor(15);
                                     Sleep(1000);
                                     options = 3;
                                     break;
@@ -721,7 +741,9 @@ main()
                                 else
                                 {
                                     gotoxy(90, 53);
+                                    setcolor(lightred);
                                     cout << "Select a valid option";
+                                    setcolor(15);
                                     Sleep(1000);
                                     break;
                                 }
@@ -997,13 +1019,19 @@ main()
                                             gotoxy(65, 34);
                                             cout << "                       " << endl;
                                             gotoxy(65, 34);
+                                            setcolor(lightmagenta);
                                             cout << "Deposit Money" << endl;
+                                            setcolor(15);
                                             gotoxy(42, 38);
+                                            setcolor(lightmagenta);
                                             cout << setw(26) << "Username" << setw(33) << "Balance" ;
+                                            setcolor(15);
                                             gotoxy(42, 40);
                                               cout << setw(26) <<name << setw(30) << fixed << setprecision(2) << balance << endl;
                                             gotoxy(42,45);
+                                            setcolor(lightcyan);
                                             cout<<"Press 1 to deposit 2 to back";
+                                            setcolor(15);
                                             gotoxy(72,52);
                                             cout<<"  ";
                                             string opton = option(72, 52);
@@ -1013,7 +1041,9 @@ main()
                                                 gotoxy(60, 49);
                                                 cout << "                                    ";
                                                 gotoxy(60, 49);
+                                                setcolor(lightcyan);
                                                 cout << "Enter the amount: ";
+                                                setcolor(15);
                                                 gotoxy(72, 52);
                                                 string amounteds;
                                                 cin >> amounteds;
@@ -1037,8 +1067,10 @@ main()
                                                break;
                                                 }
                                                 else{
+                                                    setcolor(lightred);
                                                     gotoxy(70, 52);
                                                 cout << "Invalid amount";
+                                                setcolor(15);
                                                 Sleep(1000);
                                                 gotoxy(70, 52);
                                                 cout << "                     ";
@@ -1048,7 +1080,10 @@ main()
                                                 }
                                                 catch (const std::invalid_argument& e) {
                                                  gotoxy(70, 52);
+                                                 setcolor(lightred);
                                                 cout << "Invalid amount";
+                                                setcolor(15);
+
                                                 Sleep(1000);
                                                 gotoxy(70, 52);
                                                 cout << "                     ";
@@ -1058,7 +1093,10 @@ main()
 
                                                 } catch (const std::out_of_range& e) {
                                                       gotoxy(70, 52);
+                                                      setcolor(lightred);
                                                 cout << "Invalid amount";
+                                                setcolor(15);
+
                                                 Sleep(1000);
                                                 gotoxy(70, 52);
                                                 cout << "                     ";
@@ -1079,7 +1117,9 @@ main()
                                             else
                                             {
                                                 gotoxy(90, 53);
+                                                 setcolor(lightred);
                                                 cout << "Select a valid option";
+                                                setcolor(15);
                                                 Sleep(1000);
                                                 break;
                                             }
@@ -1094,7 +1134,9 @@ main()
                                         else
                                         {
                                             gotoxy(100, 53);
+                                                 setcolor(lightred);
                                             cout << "Select a valid option";
+                                            setcolor(15);
                                             Sleep(1000);
                                             break;
                                         }
@@ -1109,7 +1151,9 @@ main()
                                 else
                                 {
                                     gotoxy(90, 53);
+                                                 setcolor(lightred);
                                     cout << "Select a valid option";
+                                    setcolor(15);
                                     Sleep(1000);
                                 }
                             }
@@ -1160,12 +1204,8 @@ void readArrayFromFile(string bankholders[], string bankholder[], string banknum
         }
 
         inputFile.close();
-        cout << "Data read from file successfully." << endl;
     }
-    else
-    {
-        cout << "Error opening file for reading." << endl;
-    }
+
 }
 //                                                    recieving accounts file handling
 void printArrayToFile(string name, string bankholder[], string banknumber[], string bankname[], int index[], int size)
@@ -1266,9 +1306,13 @@ void loadDataFromFile(string usernames[], double balances[], string transactionH
 void viewAllUsers(string usernames[], double balances[], int MAX_USERS,string name,bool deposit)
 {
     gotoxy(65, 34);
+    setcolor(lightmagenta);
     cout << "All Users:" << endl;
+    setcolor(15);
     gotoxy(36, 36);
+    setcolor(lightcyan);
     cout << setw(40) << "Username" << setw(30) << "Balance" << endl;
+    setcolor(15);
     for (int i = 0; i < MAX_USERS; ++i)
     {
         if (usernames[i] != ""&& usernames[i]!=name)
@@ -1290,7 +1334,9 @@ void viewAllTransactions(string usernames[], string transactionHistoriesUsername
     gotoxy(36, 36);
     cout << setw(30) << "Username" << setw(30) << "Description" << setw(20) << "Amount" << endl;
     gotoxy(60, 34);
+    setcolor(lightmagenta);
     cout << "Transaction Reciving History of User" << endl;
+    setcolor(15);
             for (int j = 0; j < 10; ++j)
             {
                 gotoxy(36, 37 + j);
@@ -1305,7 +1351,11 @@ void viewAllTransactions(string usernames[], string transactionHistoriesUsername
     gotoxy(36, 22);
     cout << setw(30) << "Username" << setw(30) << "Description" << setw(20) << "Amount" << endl;
                 gotoxy(60, 14);
+    setcolor(lightmagenta);
+
     cout << "Transaction History for All Users:" << endl;
+    setcolor(15);
+
             for (int j = 0; j <transactionCounts[i]; ++j)
             {
                 gotoxy(36, 17 + j);
@@ -1855,6 +1905,7 @@ void thanku()
 //    Manage users screen
 void manageusers()
 {
+    setcolor(lightcyan);
     gotoxy(20, 5);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 6);
@@ -1878,6 +1929,7 @@ void manageusers()
     gotoxy(20, 15);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 16);
+    setcolor(15);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 17);
     cout << "#     ##      ## ##    ## ##    ####   ##   ##  ###  ##  #### #    ####   ###  ##  ### ###   ## ##      #" << endl;
@@ -1900,11 +1952,15 @@ void manageusers()
     gotoxy(20, 26);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 27);
+    setcolor(lightmagenta);
     cout << "#----------------------------------------------- Bank Accounts -----------------------------------------#" << endl;
+    setcolor(15);
     gotoxy(20, 28);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 29);
+    setcolor(lightcyan);
     cout << "#   Bank No.        Account holder name            Account Number                  Account Type         #" << endl;
+    setcolor(15);
     gotoxy(20, 30);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 31);
@@ -1926,7 +1982,9 @@ void manageusers()
     gotoxy(20, 39);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 40);
+    setcolor(lightmagenta);
     cout << "#   Account Holder's Name:                                          Account type:                       #" << endl;
+    setcolor(15);
     gotoxy(20, 41);
     cout << "#    ___________________________________________                    _________________________           #" << endl;
     gotoxy(20, 42);
@@ -1938,7 +1996,9 @@ void manageusers()
     gotoxy(20, 45);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 46);
+    setcolor(lightmagenta);
     cout << "#   CNIC Number:                                                   Instructions:                        #" << endl;
+    setcolor(15);
     gotoxy(20, 47);
     cout << "#    _______________________________________                      1) Edit details                       #" << endl;
     gotoxy(20, 48);
@@ -1950,6 +2010,7 @@ void manageusers()
     gotoxy(20, 51);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 52);
+    setcolor(lightcyan);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 53);
     cout << "#                                                                                                       #" << endl;
@@ -1965,11 +2026,14 @@ void manageusers()
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 59);
     cout << "#########################################################################################################";
+    setcolor(15);
 }
 //                                                        admin screen
 void admin(string &name, string &type)
 {
+    
     system("cls");
+    setcolor(lightcyan);
     gotoxy(20, 5);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 6);
@@ -1992,6 +2056,7 @@ void admin(string &name, string &type)
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 15);
     cout << "#########################################################################################################" << endl;
+    setcolor(15);
     gotoxy(20, 16);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 17);
@@ -2007,7 +2072,9 @@ void admin(string &name, string &type)
     gotoxy(20, 22);
     cout << "#                                                   ##                                                  #" << endl;
     gotoxy(20, 23);
+    setcolor(lightmagenta);
     cout << "#  1) View your Account                             ##    2) Manage users                               #" << endl;
+    setcolor(15);
     gotoxy(20, 24);
     cout << "#                                                   ##                                                  #" << endl;
     gotoxy(20, 25);
@@ -2035,7 +2102,9 @@ void admin(string &name, string &type)
     gotoxy(20, 36);
     cout << "#                                                   ##                                                  #" << endl;
     gotoxy(20, 37);
+    setcolor(lightmagenta);
     cout << "#  3) Money Transfer Management                     ##   4) Exit the application                        #" << endl;
+    setcolor(15);
     gotoxy(20, 38);
     cout << "#                                                   ##                                                  #" << endl;
     gotoxy(20, 39);
@@ -2055,6 +2124,7 @@ void admin(string &name, string &type)
     gotoxy(20, 46);
     cout << "#                                                   ##                                                  #" << endl;
     gotoxy(20, 47);
+    setcolor(lightcyan);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 48);
     cout << "#                                                                                                       #" << endl;
@@ -2072,6 +2142,7 @@ void admin(string &name, string &type)
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 55);
     cout << "#########################################################################################################";
+    setcolor(15);
 }
 //                                                         send money tab
 void sendmoney(string &add_bank)
@@ -2241,6 +2312,7 @@ void displayUnfreezeScreen()
 void transfermoney(string name)
 {
     system("cls");
+    setcolor(lightcyan);
     gotoxy(20, 5);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 6);
@@ -2263,10 +2335,13 @@ void transfermoney(string name)
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 15);
     cout << "#########################################################################################################" << endl;
+    setcolor(15);
     gotoxy(20, 16);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 17);
+    setcolor(lightcyan);
     cout << "#--------------------------------------------- MONEY TRANSFER ------------------------------------------#" << endl;
+    setcolor(15);
     gotoxy(20, 18);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 19);
@@ -2278,7 +2353,9 @@ void transfermoney(string name)
     gotoxy(20, 22);
     cout << "#                                                   ##                                                  #" << endl;
     gotoxy(20, 23);
+    setcolor(lightmagenta);
     cout << "#  1) View your Account Balance                     ##    2) Add receiving account                      #" << endl;
+    setcolor(15);
     gotoxy(20, 24);
     cout << "#                                                   ##                                                  #" << endl;
     gotoxy(20, 25);
@@ -2305,8 +2382,10 @@ void transfermoney(string name)
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 36);
     cout << "#                                                   ##                                                  #" << endl;
+    setcolor(lightmagenta);
     gotoxy(20, 37);
     cout << "#  3) Send Money                                    ##   4) Back to homepage                            #" << endl;
+    setcolor(15);
     gotoxy(20, 38);
     cout << "#                                                   ##                                                  #" << endl;
     gotoxy(20, 39);
@@ -2326,6 +2405,7 @@ void transfermoney(string name)
     gotoxy(20, 46);
     cout << "#                                                   ##                                                  #" << endl;
     gotoxy(20, 47);
+    setcolor(lightcyan);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 48);
     cout << "#                                                                                                       #" << endl;
@@ -2343,6 +2423,7 @@ void transfermoney(string name)
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 55);
     cout << "#########################################################################################################";
+    setcolor(15);
 }
 //                                                   Account information
 void accountinfo(string &name, string &cnic, string &combined, int &balance)
@@ -2350,6 +2431,7 @@ void accountinfo(string &name, string &cnic, string &combined, int &balance)
 
     system("cls");
     gotoxy(20, 5);
+    setcolor(lightcyan);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 6);
     cout << "#                                                                                                       #" << endl;
@@ -2371,6 +2453,7 @@ void accountinfo(string &name, string &cnic, string &combined, int &balance)
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 15);
     cout << "#########################################################################################################" << endl;
+    setcolor(15);
     gotoxy(20, 16);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 17);
@@ -2394,7 +2477,9 @@ void accountinfo(string &name, string &cnic, string &combined, int &balance)
     gotoxy(20, 26);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 27);
+    setcolor(lightmagenta);
     cout << "#   Account Holder's Name:                                       Account Balance:                       #" << endl;
+    setcolor(15);
     gotoxy(20, 28);
     cout << "#    ___________________________________________                 ___________________________            #" << endl;
     gotoxy(20, 29);
@@ -2406,7 +2491,9 @@ void accountinfo(string &name, string &cnic, string &combined, int &balance)
     gotoxy(20, 32);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 33);
+    setcolor(lightmagenta);
     cout << "#   CNIC:                                                                                               #" << endl;
+    setcolor(15);
     gotoxy(20, 34);
     cout << "#    _______________________________________                                                            #" << endl;
     gotoxy(20, 35);
@@ -2418,7 +2505,9 @@ void accountinfo(string &name, string &cnic, string &combined, int &balance)
     gotoxy(20, 38);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 39);
+    setcolor(lightmagenta);
     cout << "#    Account number / IBAN number:                                                                      #" << endl;
+    setcolor(15);
     gotoxy(20, 40);
     cout << "#     __________________________________                                                                #" << endl;
     gotoxy(20, 41);
@@ -2436,6 +2525,7 @@ void accountinfo(string &name, string &cnic, string &combined, int &balance)
     gotoxy(20, 47);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 48);
+    setcolor(lightcyan);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 49);
     cout << "#                                                                                                       #" << endl;
@@ -2451,11 +2541,13 @@ void accountinfo(string &name, string &cnic, string &combined, int &balance)
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 55);
     cout << "#########################################################################################################";
+    setcolor(15);
 }
 
 //                                                   add recieving account
 void addaccount(string &add_bank)
 {
+    setcolor(lightcyan);
     gotoxy(20, 5);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 6);
@@ -2478,6 +2570,7 @@ void addaccount(string &add_bank)
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 15);
     cout << "#########################################################################################################" << endl;
+    setcolor(15);
     gotoxy(20, 16);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 17);
@@ -2501,7 +2594,9 @@ void addaccount(string &add_bank)
     gotoxy(20, 26);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 27);
+    setcolor(lightmagenta);
     cout << "#   Account Holder's Name:                                          Bank Name:                          #" << endl;
+    setcolor(15);
     gotoxy(20, 28);
     cout << "#    ___________________________________________                    _________________________           #" << endl;
     gotoxy(20, 29);
@@ -2513,7 +2608,9 @@ void addaccount(string &add_bank)
     gotoxy(20, 32);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 33);
+    setcolor(lightmagenta);
     cout << "#   Account Number:                                                Instructions:                        #" << endl;
+    setcolor(15);
     gotoxy(20, 34);
     cout << "#    _______________________________________                      1) Add new bank                       #" << endl;
     gotoxy(20, 35);
@@ -2521,7 +2618,7 @@ void addaccount(string &add_bank)
     gotoxy(20, 36);
     cout << "#   |   " << setw(27) << left << add_bank << "         |                     3) Back to trading page               #" << endl;
     gotoxy(20, 37);
-    cout << "#   |_______________________________________|                     4)                                    #" << endl;
+    cout << "#   |_______________________________________|                                                           #" << endl;
     gotoxy(20, 38);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 39);
@@ -2543,6 +2640,7 @@ void addaccount(string &add_bank)
     gotoxy(20, 47);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 48);
+    setcolor(lightcyan);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 49);
     cout << "#                                                                                                       #" << endl;
@@ -2558,6 +2656,7 @@ void addaccount(string &add_bank)
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 55);
     cout << "#########################################################################################################";
+    setcolor(15);
 }
 
 //                                                      password display
@@ -3302,7 +3401,7 @@ void optionsdisplay()
 //                                                      admin money page
 void displaymoneymanageadmin()
 {
-
+    setcolor(lightcyan);
     gotoxy(20, 5);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 6);
@@ -3325,6 +3424,7 @@ void displaymoneymanageadmin()
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 15);
     cout << "#########################################################################################################" << endl;
+    setcolor(white);
     gotoxy(20, 16);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 17);
@@ -3348,7 +3448,9 @@ void displaymoneymanageadmin()
     gotoxy(20, 26);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 27);
+    setcolor(lightmagenta);
     cout << "#                                                  Instructions                                         #" << endl;
+    setcolor(white);
     gotoxy(20, 28);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 29);
@@ -3390,6 +3492,7 @@ void displaymoneymanageadmin()
     gotoxy(20, 47);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 48);
+    setcolor(lightcyan);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 49);
     cout << "#                                                                                                       #" << endl;
@@ -3405,11 +3508,12 @@ void displaymoneymanageadmin()
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 55);
     cout << "#########################################################################################################";
+    setcolor(white);
 }
 //                                                      user money page
 void displaymoneymanage()
 {
-
+    setcolor(lightcyan);
     gotoxy(20, 5);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 6);
@@ -3432,6 +3536,7 @@ void displaymoneymanage()
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 15);
     cout << "#########################################################################################################" << endl;
+    setcolor(white);
     gotoxy(20, 16);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 17);
@@ -3455,7 +3560,9 @@ void displaymoneymanage()
     gotoxy(20, 26);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 27);
+    setcolor(lightmagenta);
     cout << "#                                                  Instructions                                         #" << endl;
+    setcolor(white);
     gotoxy(20, 28);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 29);
@@ -3497,6 +3604,7 @@ void displaymoneymanage()
     gotoxy(20, 47);
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 48);
+    setcolor(lightcyan);
     cout << "#########################################################################################################" << endl;
     gotoxy(20, 49);
     cout << "#                                                                                                       #" << endl;
@@ -3512,6 +3620,7 @@ void displaymoneymanage()
     cout << "#                                                                                                       #" << endl;
     gotoxy(20, 55);
     cout << "#########################################################################################################";
+    setcolor(white);
 }
 //                                                      user money page
 void histories()
