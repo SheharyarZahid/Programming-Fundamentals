@@ -298,14 +298,15 @@ main()
                                         }
                                         else
                                         {
+                                            signup();
                                             sign_string(name, password, cnic, type, namearray, passwordarray, rolearray, cnicarray, indexCount);
                                             gotoxy(60, 52);
                                             setcolor(2);
                                             cout << "Successfully Registered";
                                             setcolor(15);
-                                            Sleep(1000);
                                             writeData(name, password, cnic, type);
                                             options = 6;
+                                            Sleep(1000);
                                         }
                                     }
                                 }
@@ -562,13 +563,20 @@ main()
                             options = isAlphabet(optionss);
                             while (true)
                             {
+                                     for (int i = 0; i < 10; i++)
+                            {
+                                if (namearray[i] == name)
+                                {
+                                    balance = balances[i];
+                                }
+                            }
                                 gotoxy(30, 27);
                                 setcolor(lightcyan);
                                 cout << "Balance: " << balance;
                                 setcolor(15);
                                 if (options == 1)
                                 {
-                                    viewAllUsers(namearray, balances, MAX_USERS, name, false);
+                                    viewAllUsers(namearray, balances, fileindex, name, false);
                                     gotoxy(60, 49);
                                     cout << "                                    ";
                                     gotoxy(60, 49);
@@ -606,7 +614,8 @@ main()
                                                 try
                                                 {
                                                     amount = stod(amounts);
-                                                    if (amount > 0 && amount <= balance && balance - amount >= 0)
+
+                                                    if (amount > 0 && balance - amount >= 0)
                                                     {
                                                         balance -= amount;
                                                         for (int i = 0; i < 10; i++)
@@ -876,6 +885,13 @@ main()
                             system("cls");
                             while (true)
                             {
+                                 for (int i = 0; i < 10; i++)
+                            {
+                                if (namearray[i] == name)
+                                {
+                                    balance = balances[i];
+                                }
+                            }
 
                                 transfermoney(name);
                                 options2 = option(72, 52);
@@ -947,9 +963,16 @@ main()
                                     options = isAlphabet(optionss);
                                     while (true)
                                     {
+                                         for (int i = 0; i < 10; i++)
+                            {
+                                if (namearray[i] == name)
+                                {
+                                    balance = balances[i];
+                                }
+                            }
                                         if (options == 1)
                                         {
-                                            viewAllUsers(namearray, balances, MAX_USERS, name, false);
+                                            viewAllUsers(namearray, balances,fileindex, name, false);
                                             gotoxy(60, 49);
                                             cout << "                                    ";
                                             gotoxy(60, 49);
@@ -987,9 +1010,9 @@ main()
                                                         try
                                                         {
                                                             amount = stod(amounts);
-                                                            balance -= amount;
                                                             if (amount > 0 && amount <= balance && balance - amount >= 0)
                                                             {
+                                                            balance -= amount;
                                                                 for (int i = 0; i < 10; i++)
                                                                 {
                                                                     if (namearray[i] == name)
@@ -1441,7 +1464,7 @@ void viewAllTransactions(string usernames[], string transactionHistoriesUsername
         {
             gotoxy(36, 20);
             cout << "                                                                                  ";
-            gotoxy(36, 22);
+            gotoxy(36, 17);
             cout << setw(30) << "Username" << setw(30) << "Description" << setw(20) << "Amount" << endl;
             gotoxy(60, 14);
             setcolor(lightmagenta);
@@ -1451,7 +1474,7 @@ void viewAllTransactions(string usernames[], string transactionHistoriesUsername
 
             for (int j = 0; j < transactionCounts[i]; ++j)
             {
-                gotoxy(36, 17 + j);
+                gotoxy(36, 19 + j);
                 cout << setw(30) << transactionHistoriesUsernames[i] << setw(30) << transactionDescriptions[i][j]
                      << setw(20) << fixed << setprecision(2) << transactionAmounts[i][j] << endl;
             }

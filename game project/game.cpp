@@ -11,10 +11,10 @@ void gotoxy(int x, int y);
 // Player movement functions
 void erasesurfer(int &pX, int &pY);
 void printsurfer(int &pX, int &pY, string &rifle);
-void movesurferLeft(int &pX, int &pY, string &rifle);
+void movesurferLeft(int &pX, int &pY, string &rifle, int &score);
 void movesurferRight(int &pX, int &pY, string &rifle, int &score);
-void movesurferup(int &pX, int &pY, string &rifle);
-void movesurferdown(int &pX, int &pY, string &rifle);
+void movesurferup(int &pX, int &pY, string &rifle, int &score);
+void movesurferdown(int &pX, int &pY, string &rifle, int &score);
 
 // Enemy type 1 functions
 void printEnemy(int &eX, int &eY);
@@ -57,7 +57,7 @@ void generateColors();
 // Other game-related functions
 int loadHighestScore();
 void storeHighestScore(int score);
-int isAlphabet(string value);
+int isAlphabet(char value);
 void moveBullet();
 void shootBullet(int pX, int pY);
 void display();
@@ -67,7 +67,7 @@ void stone();
 void gameover();
 void text();
 void controls();
-
+int counts=0;
 // Color constants
         string setcolor(unsigned short color)
     {
@@ -84,7 +84,7 @@ int bulletY = 0;
 // int enemyBulletY = -1;
 // bool enemyBulletActive = false;
 int health=500;
-int health1=5,health2=5,health3=5; 
+int health1=5,health2=0,health3=0; 
 void drawEnemyBullets(int &pX,int &pY);
 void removeEnemyBullets(int &pX,int &pY);
 const int MAX_ENEMY_BULLETS = 5; // Adjust the maximum number of enemy bullets
@@ -97,6 +97,7 @@ bool enemi2=true;
 bool enemi3=true;
 bool enemy2a=true;
 bool e3=true;
+int lvl=0;
 bool active=true;
 int enemyBulletX[MAX_ENEMY_BULLETS];
 int enemyBulletY[MAX_ENEMY_BULLETS];
@@ -109,7 +110,9 @@ int highestScore=0;
 // Main function
 main()
 {
+    
 // Variables
+char ch;
 string rifle = "||";
 int score=0;
 int EX=116,EY=53;
@@ -117,9 +120,8 @@ int pX = 3, pY = 20;
 int eX = 120, eY = 20;
 int ex = 126, ey = 6;
 int fire=0;
-string ops="";
+char ops=' ';
 int op=isAlphabet(ops);
-storeHighestScore(score);
 highestScore=loadHighestScore();
 if(highestScore>10000){
     highestScore=0;
@@ -127,15 +129,14 @@ if(highestScore>10000){
 while (true)
 {
 
-    system("cls");
     if(op==0){
-        
-        ops=" ";
+    system("cls");
+        ops=' ';
 display();
 text();
 ship();
 gotoxy(75,55);
-cout<<" ";
+cout<<"                       ";
 gotoxy(75,55);
 cin>>ops;
 op=isAlphabet(ops);
@@ -169,6 +170,8 @@ if(op==1){
 while (true)
 {
     stone();
+    gotoxy(40,2);
+    cout<<"Level: "<<lvl+1;
     gotoxy(90,2);
     cout<<"Highest Score: "<<highestScore;
      gotoxy(120,2);
@@ -216,7 +219,55 @@ int ex = 126, ey = 6;
     }
     }
 
-    if(health1<=0&&health2<=0 && health3<=0){
+    if(health1<=0 && lvl==0){
+        storeHighestScore(score);
+        highestScore=loadHighestScore();
+        if(highestScore>10000){
+    highestScore=0;
+}
+        lvl=1;
+        system("cls");
+        EX=116,EY=53;
+ pX = 3, pY = 20;
+ eX = 120, eY = 20;
+ ex = 126, ey = 6;
+        health1=5;
+        op=0;
+        health=500;
+        health2=5;
+         enemy2a=true;
+// e3=true;
+ active=true;
+//         health3=5;
+        win();
+        break;
+    }
+      if(health1<=0&&health2<=0 && lvl==1){
+        storeHighestScore(score);
+        highestScore=loadHighestScore();
+        if(highestScore>10000){
+    highestScore=0;
+}
+        lvl=2;
+        system("cls");
+        EX=116,EY=53;
+ pX = 3, pY = 20;
+ eX = 120, eY = 20;
+ ex = 126, ey = 6;
+        health1=5;
+        op=0;
+        health=500;
+        health2=5;
+         enemy2a=true;
+e3=true;
+ active=true;
+        health3=5;
+        win();
+        break;
+    }
+      if(health1<=0&&health2<=0 && health3<=0 && lvl==2){
+        storeHighestScore(score);
+        highestScore=loadHighestScore();
         system("cls");
         EX=116,EY=53;
  pX = 3, pY = 20;
@@ -245,15 +296,15 @@ e3=true;
     }
     if (GetAsyncKeyState(VK_LEFT))
     {
-        movesurferLeft(pX, pY,rifle);
+        movesurferLeft(pX, pY,rifle,score);
     }
     if (GetAsyncKeyState(VK_UP))
     {
-        movesurferup(pX, pY, rifle);
+        movesurferup(pX, pY, rifle,score);
     }
     if (GetAsyncKeyState(VK_DOWN))
     {
-        movesurferdown(pX, pY,rifle);
+        movesurferdown(pX, pY,rifle,score);
 
     }
     if (GetAsyncKeyState(VK_RIGHT))
@@ -295,7 +346,7 @@ active=true;
         health2=5;
         health3=5;
         op=0;
-        ops="";
+        ops=' ';
         gameover();
         break;
     }
@@ -535,12 +586,12 @@ void moveEnemyBullet(int &ex, int &ey,int &pX,int &pY)
 }
       
    
-int isAlphabet(string value)
+int isAlphabet(char value)
 {
     try
     {
 
-        int values = stoi(value);
+        int values = value - '0';
         if (values == 1 || values == 2 || values == 4 || values == 5 || values == 6 || values == 0 || values == 3 || values == 8 || values == 7 || values == 9)
         {
             return values;
@@ -659,7 +710,7 @@ void controls(){
 // /  __// \ /\/ \/  _ \/  __/
 }
 //                                                                   Move surfer up
-void movesurferup(int &pX,int &pY,string &rifle)
+void movesurferup(int &pX,int &pY,string &rifle,int &score)
 {
     if (getCharAtxy(pX, pY - 2) == ' ' && pY >= 15 && getCharAtxy(pX + 1, pY - 2) == ' ' && getCharAtxy(pX + 2, pY - 2) == ' ' && getCharAtxy(pX + 3, pY - 2) == ' ' && getCharAtxy(pX + 4, pY - 2) == ' ' && getCharAtxy(pX + 5, pY - 2) == ' ' && getCharAtxy(pX + 6, pY - 2) == ' ' && getCharAtxy(pX + 7, pY - 2) == ' ' && getCharAtxy(pX + 8, pY - 2) == ' ' && getCharAtxy(pX + 9, pY - 2) == ' ' && getCharAtxy(pX + 10, pY - 2) == ' ' && getCharAtxy(pX + 11, pY - 2) == ' ' && getCharAtxy(pX + 12, pY - 2) == ' ' && getCharAtxy(pX + 13, pY - 2) == ' ' && getCharAtxy(pX + 14, pY - 2) == ' ' && getCharAtxy(pX + 15, pY - 2) == ' ' && getCharAtxy(pX + 16, pY - 2) == ' ' && getCharAtxy(pX + 17, pY - 2) == ' ' && getCharAtxy(pX + 18, pY - 2) == ' ' && getCharAtxy(pX + 19, pY - 2) == ' ' && getCharAtxy(pX + 20, pY - 2) == ' ' && getCharAtxy(pX + 21, pY - 2) == ' ' && getCharAtxy(pX + 22, pY - 2) == ' ' && getCharAtxy(pX + 23, pY - 2) == ' ' && getCharAtxy(pX + 24, pY - 2) == ' ' && getCharAtxy(pX + 25, pY - 2) == ' '&& getCharAtxy(pX + 26, pY - 2) == ' '&& getCharAtxy(pX + 27, pY - 2) == ' '&& getCharAtxy(pX + 28, pY - 2) == ' '&& getCharAtxy(pX + 29, pY - 2) == ' ')
     {
@@ -668,10 +719,26 @@ void movesurferup(int &pX,int &pY,string &rifle)
         pY = pY - 2;
         printsurfer(pX,pY,rifle);
     }
+if(getCharAtxy(pX,pY-2)=='*'||getCharAtxy(pX+1,pY-2)=='*'||getCharAtxy(pX+2,pY-2)=='*'||getCharAtxy(pX+3,pY-2)=='*'||getCharAtxy(pX+4,pY-2)=='*'||getCharAtxy(pX+5,pY-2)=='*'||getCharAtxy(pX+6,pY-2)=='*'||getCharAtxy(pX+7,pY-2)=='*'||getCharAtxy(pX+8,pY-2)=='*'||getCharAtxy(pX+9,pY-2)=='*'||getCharAtxy(pX+10,pY-2)=='*'||getCharAtxy(pX+11,pY-2)=='*'||getCharAtxy(pX+12,pY-2)=='*'||getCharAtxy(pX+13,pY-2)=='*'||getCharAtxy(pX+14,pY-2)=='*'||getCharAtxy(pX+15,pY-2)=='*'||getCharAtxy(pX+16,pY-2)=='*'||getCharAtxy(pX+17,pY-2)=='*'||getCharAtxy(pX+18,pY-2)=='*'||getCharAtxy(pX+19,pY-2)=='*'||getCharAtxy(pX+20,pY-2)=='*'||getCharAtxy(pX+21,pY-2)=='*'||getCharAtxy(pX+22,pY-2)=='*'||getCharAtxy(pX+23,pY-2)=='*'||getCharAtxy(pX+24,pY-2)=='*'||getCharAtxy(pX+25,pY-2)=='*'||getCharAtxy(pX+26,pY-2)=='*'||getCharAtxy(pX+27,pY-2)=='*'||getCharAtxy(pX+28,pY-2)=='*'||getCharAtxy(pX+29,pY-2)=='*')
+    {
+        erasesurfer(pX,pY);
+        score=score+1;
+        pY=pY-2;
+        printsurfer(pX,pY,rifle);
+    }
 }
 //                                                        Move surfer left
-void movesurferLeft(int &pX, int &pY,string &rifle)
+void movesurferLeft(int &pX, int &pY,string &rifle,int &score)
 {
+    if (getCharAtxy(pX -1, pY) == '*' || getCharAtxy(pX -1, pY + 6) == '*' ||
+        getCharAtxy(pX -1, pY + 5) == '*' || getCharAtxy(pX -1, pY + 4) == '*' ||
+        getCharAtxy(pX -1, pY + 3) == '*' || getCharAtxy(pX -1, pY + 2) == '*')
+    {
+        erasesurfer(pX, pY);
+        score = score + 1;
+        pX = pX + 2;
+        printsurfer(pX, pY, rifle);
+    }
     if (getCharAtxy(pX - 1, pY) == ' '  && getCharAtxy(pX -1, pY + 6) == ' ' && getCharAtxy(pX - 1, pY + 5) == ' ' && getCharAtxy(pX - 1, pY + 4) == ' ' && getCharAtxy(pX -1, pY + 3) == ' ' && getCharAtxy(pX - 1, pY + 2) == ' ')
     {
         erasesurfer(pX, pY);
@@ -683,9 +750,9 @@ void movesurferLeft(int &pX, int &pY,string &rifle)
 //                                                         Move surfer right
 void movesurferRight(int &pX, int &pY, string &rifle, int &score)
 {
-    if (getCharAtxy(pX + 29, pY) == '*' || getCharAtxy(pX + 25, pY + 6) == '*' ||
-        getCharAtxy(pX + 29, pY + 5) == '*' || getCharAtxy(pX + 25, pY + 4) == '*' ||
-        getCharAtxy(pX + 29, pY + 3) == '*' || getCharAtxy(pX + 25, pY + 2) == '*')
+    if (getCharAtxy(pX + 18, pY) == '*' || getCharAtxy(pX + 23, pY + 6) == '*' ||
+        getCharAtxy(pX + 24, pY + 5) == '*' || getCharAtxy(pX + 25, pY + 4) == '*' ||
+        getCharAtxy(pX + 27, pY + 3) == '*' || getCharAtxy(pX + 20, pY + 2) == '*')
     {
         erasesurfer(pX, pY);
         score = score + 1;
@@ -702,11 +769,18 @@ void movesurferRight(int &pX, int &pY, string &rifle, int &score)
 }
 
 // Move surfer down
-void movesurferdown(int &pX, int &pY, string &rifle)
+void movesurferdown(int &pX, int &pY, string &rifle, int &score)
 {
     if (getCharAtxy(pX, pY + 8) == ' '&& getCharAtxy(pX+1,pY+8)==' '&& getCharAtxy(pX+2,pY+8)==' '&& getCharAtxy(pX+3,pY+8)==' '&& getCharAtxy(pX+4,pY+8)==' '&& getCharAtxy(pX+5,pY+8)==' '&& getCharAtxy(pX+6,pY+8)==' '&& getCharAtxy(pX+7,pY+8)==' '&& getCharAtxy(pX+8,pY+8)==' '&& getCharAtxy(pX+9,pY+8)==' '&& getCharAtxy(pX+10,pY+8)==' '&& getCharAtxy(pX+11,pY+8)==' '&& getCharAtxy(pX+12,pY+8)==' '&& getCharAtxy(pX+13,pY+8)==' '&& getCharAtxy(pX+14,pY+8)==' '&& getCharAtxy(pX+15,pY+8)==' '&& getCharAtxy(pX+16,pY+8)==' '&& getCharAtxy(pX+17,pY+8)==' '&& getCharAtxy(pX+18,pY+8)==' '&& getCharAtxy(pX+19,pY+8)==' '&& getCharAtxy(pX+20,pY+8)==' '&& getCharAtxy(pX+21,pY+8)==' '&& getCharAtxy(pX+22,pY+8)==' '&& getCharAtxy(pX+23,pY+8)==' '&& getCharAtxy(pX+24,pY+8)==' '&& getCharAtxy(pX+25,pY+8)==' '&& getCharAtxy(pX+26,pY+8)==' '&& getCharAtxy(pX+27,pY+8)==' '&& getCharAtxy(pX+28,pY+8)==' '&& getCharAtxy(pX+29,pY+8)==' ')
     {
         erasesurfer(pX, pY);
+        pY = pY + 2;
+        printsurfer(pX, pY, rifle);
+    }
+    if(getCharAtxy(pX,pY+8)=='*'||getCharAtxy(pX+1,pY+8)=='*'||getCharAtxy(pX+2,pY+8)=='*'||getCharAtxy(pX+3,pY+8)=='*'||getCharAtxy(pX+4,pY+8)=='*'||getCharAtxy(pX+5,pY+8)=='*'||getCharAtxy(pX+6,pY+8)=='*'||getCharAtxy(pX+7,pY+8)=='*'||getCharAtxy(pX+8,pY+8)=='*'||getCharAtxy(pX+9,pY+8)=='*'||getCharAtxy(pX+10,pY+8)=='*'||getCharAtxy(pX+11,pY+8)=='*'||getCharAtxy(pX+12,pY+8)=='*'||getCharAtxy(pX+13,pY+8)=='*'||getCharAtxy(pX+14,pY+8)=='*'||getCharAtxy(pX+15,pY+8)=='*'||getCharAtxy(pX+16,pY+8)=='*'||getCharAtxy(pX+17,pY+8)=='*'||getCharAtxy(pX+18,pY+8)=='*'||getCharAtxy(pX+19,pY+8)=='*'||getCharAtxy(pX+20,pY+8)=='*'||getCharAtxy(pX+21,pY+8)=='*'||getCharAtxy(pX+22,pY+8)=='*'||getCharAtxy(pX+23,pY+8)=='*'||getCharAtxy(pX+24,pY+8)=='*'||getCharAtxy(pX+25,pY+8)=='*'||getCharAtxy(pX+26,pY+8)=='*'||getCharAtxy(pX+27,pY+8)=='*'||getCharAtxy(pX+28,pY+8)=='*'||getCharAtxy(pX+29,pY+8)=='*')
+    {
+        erasesurfer(pX, pY);
+        score = score + 1;
         pY = pY + 2;
         printsurfer(pX, pY, rifle);
     }
@@ -766,7 +840,7 @@ void printWorld()
     cout << "#                                                                                                                                 ,``,_    `V    _`       #" << endl;
     cout << "#                                                                                                                                 ;,'  `'-,     ``=-'_    #" << endl;
     cout << "#                                                                                                                                   ,-`'    _  _     `,   #" << endl;
-    cout << "#                                                                           *                                                      /   ,.-+(_)(_)'--., ;  #" << endl;
+    cout << "#                                                                                                                                  /   ,.-+(_)(_)'--., ;  #" << endl;
     cout << "#                                                                                                                                  ,' /   ; (_)        `\\,#" << endl;
     cout << "#                                                                                                                                  V'     ;  ;            #" << endl;
     cout << "#                                                                                                                                     _.--;..;--,         #" << endl;
@@ -903,15 +977,16 @@ void moveEnemy(int &eX, int &eY,int &pX,int &pY)
     {
         eY = eY + 1;
         eX = eX - 1;
-       if(eX > pX && eX < pX + 29 && eY+6 >= pY && eY <= pY + 6 &&eX+30>=pX|| eY==32 || getCharAtxy(eX,eY+5)!=' '||getCharAtxy(eX+1,eY+5)!=' '||getCharAtxy(eX+2,eY+5)!=' '||getCharAtxy(eX+3,eY+5)!=' '||getCharAtxy(eX+4,eY+5)!=' '||getCharAtxy(eX+5,eY+5)!=' '||getCharAtxy(eX+6,eY+5)!=' '||getCharAtxy(eX+7,eY+5)!=' '||getCharAtxy(eX+8,eY+5)!=' '||getCharAtxy(eX+9,eY+5)!=' '||getCharAtxy(eX+10,eY+5)!=' '||getCharAtxy(eX+11,eY+5)!=' '||getCharAtxy(eX+12,eY+5)!=' '||getCharAtxy(eX+13,eY+5)!=' '||getCharAtxy(eX+14,eY+5)!=' '||getCharAtxy(eX+15,eY+5)!=' '||getCharAtxy(eX+16,eY+5)!=' '||getCharAtxy(eX+17,eY+5)!=' '||getCharAtxy(eX+18,eY+5)!=' '||getCharAtxy(eX+19,eY+5)!=' '||getCharAtxy(eX+20,eY+5)!=' '||getCharAtxy(eX+21,eY+5)!=' '||getCharAtxy(eX+22,eY+5)!=' '||getCharAtxy(eX+23,eY+5)!=' '||getCharAtxy(eX+24,eY+5)!=' '||getCharAtxy(eX+25,eY+5)!=' '||getCharAtxy(eX+26,eY+5)!=' '||getCharAtxy(eX+27,eY+5)!=' '||getCharAtxy(eX+28,eY+5)!=' '||getCharAtxy(eX+29,eY+5)!=' '||getCharAtxy(eX,eY-1)!=' '||getCharAtxy(eX+1,eY-1)!=' '||getCharAtxy(eX+2,eY-1)!=' '||getCharAtxy(eX+3,eY-1)!=' '||getCharAtxy(eX+4,eY-1)!=' '||getCharAtxy(eX+5,eY-1)!=' '){
+       if(eX > pX && eX < pX + 29 && eY+6 >= pY && eY <= pY + 6 &&eX+30>=pX|| eY==32 || getCharAtxy(eX,eY+5)!=' '||getCharAtxy(eX+1,eY+5)!=' '||getCharAtxy(eX+2,eY+5)!=' '||getCharAtxy(eX+3,eY+5)!=' '||getCharAtxy(eX+4,eY+5)!=' '||getCharAtxy(eX+5,eY+5)!=' '||getCharAtxy(eX+6,eY+5)!=' '||getCharAtxy(eX+7,eY+5)!=' '||getCharAtxy(eX+8,eY+5)!=' '||getCharAtxy(eX+9,eY+5)!=' '||getCharAtxy(eX+10,eY+5)!=' '||getCharAtxy(eX+11,eY+5)!=' '||getCharAtxy(eX+12,eY+5)!=' '||getCharAtxy(eX+13,eY+5)!=' '||getCharAtxy(eX+14,eY+5)!=' '||getCharAtxy(eX+15,eY+5)!=' '||getCharAtxy(eX+16,eY+5)!=' '||getCharAtxy(eX+17,eY+5)!=' '||getCharAtxy(eX+18,eY+5)!=' '||getCharAtxy(eX+19,eY+5)!=' '||getCharAtxy(eX+20,eY+5)!=' '||getCharAtxy(eX+21,eY+5)!=' '||getCharAtxy(eX+22,eY+5)!=' '||getCharAtxy(eX+23,eY+5)!=' '||getCharAtxy(eX+24,eY+5)!=' '||getCharAtxy(eX+25,eY+5)!=' '||getCharAtxy(eX+26,eY+5)!=' '||getCharAtxy(eX+27,eY+5)!=' '||getCharAtxy(eX+28,eY+5)!=' '||getCharAtxy(eX+29,eY+5)!=' '){
             patrol = false;
         }
     }
     else
     {
+
         eY = eY - 1;
         eX = eX + 1;
-        if (eY == 20)
+        if (getCharAtxy(eX+3,eY-1)!=' '||getCharAtxy(eX+4,eY-1)!=' '||getCharAtxy(eX+5,eY-1)!=' '||getCharAtxy(eX+6,eY-1)!=' '||getCharAtxy(eX+7,eY-1)!=' '||getCharAtxy(eX+8,eY-1)!=' '||getCharAtxy(eX+9,eY-1)!=' '||getCharAtxy(eX+10,eY-1)!=' '||getCharAtxy(eX+11,eY-1)!=' '||getCharAtxy(eX+12,eY-1)!=' '||getCharAtxy(eX+13,eY-1)!=' '||getCharAtxy(eX+14,eY-1)!=' '||getCharAtxy(eX+15,eY-1)!=' '||getCharAtxy(eX+16,eY-1)!=' '||getCharAtxy(eX+17,eY-1)!=' '||getCharAtxy(eX+18,eY-1)!=' '||getCharAtxy(eX+19,eY-1)!=' '||getCharAtxy(eX+20,eY-1)!=' '||getCharAtxy(eX+21,eY-1)!=' '||getCharAtxy(eX+22,eY-1)!=' '||getCharAtxy(eX+23,eY-1)!=' '||getCharAtxy(eX+24,eY-1)!=' '||getCharAtxy(eX+25,eY-1)!=' '||getCharAtxy(eX+26,eY-1)!=' '||getCharAtxy(eX+27,eY-1)!=' '||getCharAtxy(eX+28,eY-1)!=' '||getCharAtxy(eX+29,eY-1)!=' ')
         {
             patrol = true;
         }
