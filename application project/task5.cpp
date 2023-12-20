@@ -32,7 +32,7 @@ void bankadd(string bankholdername[], string banknumber[], string bankname[], st
 void bankdetails(string bankdetail[], string variable, int &x);
 void display(int x, int y);
 void displaypasswordcheck(string passwordreturn);
-void updateInformation(string &info, int x, int y, int index);
+void updateInformation(string &info, int x, int y, int index, string namearray[], string passwordarray[], string cnicarray[], int &indexCount);
 void displayFreezeScreen();
 void displayUnfreezeScreen();
 void admin(string &name, string &type);
@@ -55,7 +55,7 @@ bool log(string name, string password, string &cnic, string cnicarray[], string 
 void viewAllTransactions(string usernames[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_USERS, string type, string name);
 void sign_string(string name, string password, string cnic, string role, string namearray[], string passwordarray[], string rolearray[], string cnicarray[], int &indexCount);
 void ATMoptions(string name, string type, string named, string card, string ccv, string passwordcheck, string password, int options, string passwordreturn, string &status);
-void edit_string(string &name, string &cnic, string &password, string &role, string namearray[], string passwordarray[], string rolearray[], string cnicarray[], int &indexCount);
+void edit_string(string &name, string &cnic, string &password, string &role, string namearray[], string passwordarray[], string rolearray[], string cnicarray[], int &indexCount,string prevname);
 void addTransaction(int userIndex, const string &description, double amount, string usernames[], double balances[], string transactionHistoriesUsernames[], string transactionDescriptions[][100], double transactionAmounts[][100], int transactionCounts[], int MAX_DESCRIPTION_LENGTH, int MAX_USERS, int limit);
 //                                                 file functions
 void deleteuser(const string& fileName, string name[], string cnic[], string role[], string passwordarray[], int index);
@@ -385,10 +385,11 @@ main()
                 while (true)
                 {
                     //                                                   admin
-                    if (type == "admin" || type == "ADMIN")
+                    if (type == "admin" || type == "ADMIN"||type=="Admin")
                     {
                         system("cls");
                         admin(name, type);
+                        string prevname = name;
                         options2 = option(72, 52);
                         options = isAlphabet(options2);
                         if (options == 1)
@@ -396,25 +397,26 @@ main()
                             system("cls");
                             while (true)
                             {
+                              int dataIndex = searchArray(namearray, name, indexCount);
                                 userinfo(name, type, cnic, password);
                                 bankapp();
                                 options2 = option(72, 52);
                                 options = isAlphabet(options2);
                                 if (options == 1)
                                 {
-                                    updateInformation(name, 28, 30, 0);
+                                    updateInformation(name, 28, 30, 0, namearray, passwordarray, cnicarray, fileindex);
                                 }
                                 else if (options == 2)
                                 {
-                                    updateInformation(cnic, 28, 36, 1);
+                                    updateInformation(cnic, 28, 36, 1, namearray, passwordarray, cnicarray, fileindex);
                                 }
                                 else if (options == 3)
                                 {
-                                    updateInformation(password, 28, 42, 2);
+                                    updateInformation(password, 28, 42, 2, namearray, passwordarray, cnicarray, fileindex);
                                 }
                                 else if (options == 0)
                                 {
-                                    edit_string(name, password, cnic, type, namearray, passwordarray, rolearray, cnicarray, dataIndex);
+                                    edit_string(name, password, cnic, type, namearray, passwordarray, rolearray, cnicarray, fileindex,prevname);
                                     break;
                                 }
                                 else
@@ -447,20 +449,25 @@ main()
                                     indexst = option(72, 56);
                                     int index = isAlphabet(indexst);
                                     index -= 1;
+                                    string prevsname=namearray[index]; 
                                     variable = information(28, 43);
+                                        string namechange=variable;
                                     if (comma(variable))
                                     {
 
                                         bankdetails(namearray, variable, index);
                                         variable = (information(28, 49));
+                                        string cnicchange=variable;
                                         isAlphabet(variable);
                                         if (comma(variable) && variable.length() == 13)
                                         {
                                             bankdetails(cnicarray, variable, index);
                                             variable = information(90, 43);
-                                            if (comma(variable) && variable == "admin" && variable == "user" && variable == "ADMIN" && variable == "USER" && variable == "Admin" && variable == "User")
+                                            string rolechange=variable;
+                                            if (comma(variable) &&( variable == "admin" || variable == "user" || variable == "ADMIN" || variable == "USER" || variable == "Admin" || variable == "User"))
                                             {
                                                 bankdetails(rolearray, variable, index);
+                                    edit_string(namechange, password, cnicchange, rolechange, namearray, passwordarray, rolearray, cnicarray, fileindex,prevsname);
                                                 viewRecords(namearray, cnicarray, rolearray);
                                             }
                                             else
@@ -515,8 +522,19 @@ main()
                         //                                          exit
                         else if (options == 4)
                         {
-                            system("cls");
-                            exit(0);
+                              system("cls");
+                thanku();
+                gotoxy(30, 30);
+                setcolor(lightgreen);
+                cout << "Thank you for using our application";
+                setcolor(15);
+                Sleep(500);
+                gotoxy(40, 31);
+                setcolor(lightgreen);
+                cout << "Exiting...";
+                setcolor(15);
+                Sleep(1000);
+                exit(0);
                             break;
                         }
 
@@ -768,10 +786,11 @@ main()
                             }
                         }
                     }
-                    if (type == "user" || type == "USER")
+                    if (type == "user" || type == "USER"||type=="User")
                     {
                         system("cls");
                         user(name, type);
+                                 string prevname = name;
                         options2 = option(72, 52);
                         options = isAlphabet(options2);
                         //                                           User menu tabs
@@ -790,19 +809,19 @@ main()
                                 options = isAlphabet(options2);
                                 if (options == 1)
                                 {
-                                    updateInformation(name, 28, 30, 0);
+                                    updateInformation(name, 28, 30, 0, namearray, passwordarray, cnicarray, fileindex);
                                 }
                                 else if (options == 2)
                                 {
-                                    updateInformation(cnic, 28, 36, 1);
+                                    updateInformation(cnic, 28, 36, 1, namearray, passwordarray, cnicarray, fileindex);
                                 }
                                 else if (options == 3)
                                 {
-                                    updateInformation(password, 28, 42, 2);
+                                    updateInformation(password, 28, 42, 2, namearray, passwordarray, cnicarray, fileindex);
                                 }
                                 else if (options == 0)
                                 {
-                                    edit_string(name, password, cnic, type, namearray, passwordarray, rolearray, cnicarray, fileindex);
+                                    edit_string(name, password, cnic, type, namearray, passwordarray, rolearray, cnicarray, fileindex,prevname);
                                     break;
                                 }
                                 else
@@ -821,8 +840,19 @@ main()
                         }
                         else if (options == 4)
                         {
-                            system("cls");
-                            exit(0);
+                              system("cls");
+                thanku();
+                gotoxy(30, 30);
+                setcolor(lightgreen);
+                cout << "Thank you for using our application";
+                setcolor(15);
+                Sleep(500);
+                gotoxy(40, 31);
+                setcolor(lightgreen);
+                cout << "Exiting...";
+                setcolor(15);
+                Sleep(1000);
+                exit(0);
                             break;
                         }
                         //                                         logout
@@ -1195,7 +1225,41 @@ main()
         Sleep(1000);
     }
 }
+//                                                        edit array
+void edit_string(string &name, string &cnic, string &password, string &role, string namearray[], string passwordarray[], string rolearray[], string cnicarray[], int &indexCount,string prevname)
+{
+    const string fileName = "a.txt";
 
+    // Open the file in read mode
+    ifstream inFile(fileName);
+    if (!inFile.is_open())
+    {
+        cout << "Error opening file for reading." << endl;
+        return;
+    }
+    ofstream outFile("temp.txt");
+    string line;
+    for (int i = 0; i <= indexCount; ++i)
+    {
+        getline(inFile, line);
+    
+        string currentName = getField(line, 1);
+        if (currentName == prevname)
+        {
+            outFile << name << "," << cnic << "," << password << "," << role << endl;
+        }
+        else
+        {
+            if(line != ""){
+            outFile << line << endl;
+            }
+        }
+    }
+    inFile.close();
+    outFile.close();
+    remove(fileName.c_str());
+    rename("temp.txt", fileName.c_str());
+}
 
 //                                                          commma checker
 bool comma(string &field)
@@ -1435,7 +1499,7 @@ int findUserIndexByUsername(const string &username, string usernames[], int MAX_
 }
 
 //                                                       Information edit
-void updateInformation(string &info, int x, int y, int index)
+void updateInformation(string &info, int x, int y, int index, string namearray[], string passwordarray[], string cnicarray[], int &indexCount)
 {
     string infos = "";
     gotoxy(x, y);
@@ -1514,35 +1578,41 @@ bool hasNoInteger(string &value)
     return true;
 }
 //                                                        Filehandling
-//                                                        edit array
-void edit_string(string &name, string &cnic, string &password, string &role, string namearray[], string passwordarray[], string rolearray[], string cnicarray[], int &indexCount)
-{
-    system("cls");
-    int dataIndex = searchArray(namearray, name, indexCount);
-    if (dataIndex != -1)
-    {
-        // Modify the values in the arrays
-        namearray[dataIndex] = name;
-        passwordarray[dataIndex] = password;
-        rolearray[dataIndex] = role;
-        cnicarray[dataIndex] = cnic;
 
-        // Open the file in write mode to clear its contents
-        ofstream file("a.txt");
-        if (file.is_open())
-        {
-            for (int i = 0; i < indexCount; i++)
-            {
-                file << namearray[i] << "," << passwordarray[i] << "," << cnicarray[i] << "," << rolearray[i] << endl;
+//                                                          delete user
+void deleteuser(const string& fileName, string name[], string cnic[], string role[], string passwordarray[], int index) {
+    string nameToDelete = name[index];  // Store the name of the user to be deleted
+    name[index] = "";
+    cnic[index] = "";
+    passwordarray[index] = "";
+    role[index] = "";
+
+    fstream file(fileName, ios::in | ios::out);
+
+    if (file.is_open()) {
+        fstream tempFile("temp.txt", ios::out);
+
+        while (!file.eof()) {
+            string line;
+            getline(file, line);
+
+            string currentName = getField(line, 1);
+
+            if (currentName != nameToDelete) {  // Compare with nameToDelete instead of name[index]
+                tempFile << line << endl;
             }
-            file.close();
         }
-        else
-        {
-            cout << "Error opening file for writing." << endl;
-        }
+
+        file.close();
+        tempFile.close();
+
+        remove(fileName.c_str());
+        rename("temp.txt", fileName.c_str());
+    } else {
+        cout << "Error opening file for reading/writing." << endl;
     }
 }
+  
 //                                                        file search
 void search(int &fileindex)
 {
@@ -1656,40 +1726,7 @@ string getField(string record, int field)
     return item;
 }
 
-//                                                          delete user
-void deleteuser(const string& fileName, string name[], string cnic[], string role[], string passwordarray[], int index) {
-    string nameToDelete = name[index];  // Store the name of the user to be deleted
-    name[index] = "";
-    cnic[index] = "";
-    passwordarray[index] = "";
-    role[index] = "";
-
-    fstream file(fileName, ios::in | ios::out);
-
-    if (file.is_open()) {
-        fstream tempFile("temp.txt", ios::out);
-
-        while (!file.eof()) {
-            string line;
-            getline(file, line);
-
-            string currentName = getField(line, 1);
-
-            if (currentName != nameToDelete) {  // Compare with nameToDelete instead of name[index]
-                tempFile << line << endl;
-            }
-        }
-
-        file.close();
-        tempFile.close();
-
-        remove(fileName.c_str());
-        rename("temp.txt", fileName.c_str());
-    } else {
-        cout << "Error opening file for reading/writing." << endl;
-    }
-}
-                                                        //   print users
+                                                      //   print users
 void viewRecords(string userNames[], string userIDs[], string role[])
 {
     int k = 1;
